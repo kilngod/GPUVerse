@@ -1,0 +1,206 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using AppKit;
+using CoreGraphics;
+using GPUVulkan;
+using MacVulkan.VulkanPlatform;
+using Metal;
+using MetalKit;
+using VulkanPlatform;
+
+namespace MacVulkanApp
+{
+    public partial class GameViewController : NSViewController, IMTKViewDelegate, IVulkanRenderer
+    {
+        public IVulkanSupport VSupport { get; set; }
+        public bool PipelineInitialized { get; set; } = false;
+        public bool Active { get; set; } = false;
+
+        MTKView _view;
+
+        private VkSurfaceKHR _surface = default(VkSurfaceKHR);
+
+        public VkSurfaceKHR VkSurface { get { return _surface; } }
+
+        private VkSwapchainKHR _swapchain;
+        public VkSwapchainKHR Swapchain { get { return _swapchain; } }
+
+        private VkImage[] _swapChainImages;
+        public VkImageView[] _swapChainImageViews;
+        public void CreateSwapChainImages(uint imageCount)
+        {
+            _swapChainImages = new VkImage[imageCount];
+            _swapChainImageViews = new VkImageView[imageCount];
+        }
+
+        public VkImage[] SwapChainImages { get { return _swapChainImages; } }
+        public VkImageView[] SwapChainImageViews { get { return _swapChainImageViews; } }
+
+
+        public SwapChainSupportDetails SwapChainDetails { get; set; }
+
+        public VkSurfaceFormatKHR SurfaceFormat { get; set; }
+        public VkExtent2D SurfaceExtent2D { get; set; }
+        public VkPresentModeKHR PresentMode { get; set; }
+
+        public VkFormat ImageFormat { get; set; }
+
+        public VkRenderPass RenderPass { get; set; }
+
+        public VkPipelineLayout PipelineLayout { get; set; }
+        public VkPipeline GraphicsPipeline { get; set; }
+
+        public VkFramebuffer[] Framebuffers { get; set; }
+
+        public VkCommandPool CommandPool { get; set; }
+
+        public VkCommandBuffer[] CommandBuffers { get; set; }
+
+        public QueueFamilyIndices FamilyIndices { get; set; }
+
+        public VkSemaphore ImageAvailableSemaphore { get; set; }
+        public VkSemaphore RenderFinishedSemaphore { get; set; }
+
+        public VkQueue _graphicsQueue;
+        public VkQueue GraphicsQueue { get { return _graphicsQueue; } }
+        public void SetGraphicsQueue(VkQueue graphicsQueue)
+        {
+            _graphicsQueue = graphicsQueue;
+        }
+
+
+        public VkQueue _presentQueue;
+        public VkQueue PresentQueue { get { return _presentQueue; } }
+        public void SetPresentQueue(VkQueue presentQueue)
+        {
+            _presentQueue = presentQueue;
+        }
+
+        public int Width { get { return Convert.ToInt32(_view.DrawableSize.Width); } }
+        public int Height { get { return Convert.ToInt32(_view.DrawableSize.Height); } }
+
+        //GPUAnimator Animator;
+
+        public GameViewController(IntPtr handle) : base(handle)
+        {
+
+        }
+
+        public void Draw(MTKView view)
+        {
+            if (Active)
+            {
+                VulkanDraw.DrawFrame(this);
+            }
+        }
+
+        public void DrawableSizeWillChange(MTKView view, CGSize size)
+        {
+            this.UpdateSwapChainImageSize(_surface, ref _swapchain, Convert.ToInt32(size.Width), Convert.ToInt32(size.Height));
+        }
+
+
+        private void CreateSurface()
+        {
+            VulkanSurface.CreateMacMTKViewSurface(VSupport, ref _surface, _view.Handle);
+
+        }
+
+        void SetupView()
+        {
+            _view = (MTKView)View;
+            _view.Delegate = this;
+
+            // Setup the render target, choose values based on your app
+            _view.SampleCount = 4;
+            _view.DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
+
+
+        }
+
+
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
+
+            VSupport = new VulkanSupport(DeliveryPlatform.MacOS);
+
+
+            SetupView();
+
+            // update width and height and then update swapchain
+            SurfaceExtent2D = new VkExtent2D(Width, Height);
+
+
+
+
+            SetupPipeline();
+
+            Active = true;
+        }
+
+        public void SetupPipeline()
+        {
+#if DEBUG
+            VulkanFlowTracer.AddItem($"RendererVulkan.SetupPipeline");
+#endif
+
+            CreateSurface();
+
+            this.ConfigureDevices(_surface);
+
+            this.CreateSwapChain(_surface, ref _swapchain);
+            this.CreateImageViews();
+            this.CreateRenderPass();
+
+            List<VulkanSpirV> orderedShaderList = new List<VulkanSpirV>();
+            string resourceFolder = AppContext.BaseDirectory.Replace("MonoBundle", "Resources");
+            VulkanSpirV vert = new VulkanSpirV() { EntryName = "main", Name = "Vertex for Trangle", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_VERTEX_BIT, SpirVByte = MacIO.LoadRawResource(resourceFolder + "vert.spv") };
+            orderedShaderList.Add(vert);
+            VulkanSpirV frag = new VulkanSpirV() { EntryName = "main", Name = "Fragment for Trangle", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_FRAGMENT_BIT, SpirVByte = MacIO.LoadRawResource(resourceFolder + "frag.spv") };
+            orderedShaderList.Add(frag);
+            this.CreateGraphicsPipeline(orderedShaderList);
+
+            this.CreateFramebuffers();
+            this.CreateCommandPool();
+            this.CreateCommandBuffers();
+            this.CreateSyncSemaphores();
+        }
+
+        private unsafe void CleanUpPipeline()
+        {
+            VulkanNative.vkDestroySemaphore(VSupport.Device, RenderFinishedSemaphore, null);
+            VulkanNative.vkDestroySemaphore(VSupport.Device, ImageAvailableSemaphore, null);
+
+            VulkanNative.vkDestroyCommandPool(VSupport.Device, CommandPool, null);
+
+            foreach (var framebuffer in Framebuffers)
+            {
+                VulkanNative.vkDestroyFramebuffer(VSupport.Device, framebuffer, null);
+            }
+
+            VulkanNative.vkDestroyPipeline(VSupport.Device, GraphicsPipeline, null);
+
+            VulkanNative.vkDestroyPipelineLayout(VSupport.Device, PipelineLayout, null);
+
+            VulkanNative.vkDestroyRenderPass(VSupport.Device, RenderPass, null);
+
+            foreach (var imageView in SwapChainImageViews)
+            {
+                VulkanNative.vkDestroyImageView(VSupport.Device, imageView, null);
+            }
+
+            VulkanNative.vkDestroySwapchainKHR(VSupport.Device, _swapchain, null);
+
+            VulkanNative.vkDestroySurfaceKHR(VSupport.Instance, _surface, null);
+
+        }
+
+
+
+    }
+}
+

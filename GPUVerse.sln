@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPUGraphicsMaui", "GPUGraph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPUMauiApp", "GPUMauiApp\GPUMauiApp.csproj", "{836BC874-D009-4C85-B22A-E95406BC7709}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacVulkan", "MacVulkan\MacVulkan.csproj", "{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacVulkanApp", "MacVulkanApp\MacVulkanApp.csproj", "{8D5CF0EE-60E6-42A3-AD9C-6422B7EF4BB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,14 @@ Global
 		{836BC874-D009-4C85-B22A-E95406BC7709}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{836BC874-D009-4C85-B22A-E95406BC7709}.Release|Any CPU.Build.0 = Release|Any CPU
 		{836BC874-D009-4C85-B22A-E95406BC7709}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D5CF0EE-60E6-42A3-AD9C-6422B7EF4BB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D5CF0EE-60E6-42A3-AD9C-6422B7EF4BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D5CF0EE-60E6-42A3-AD9C-6422B7EF4BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D5CF0EE-60E6-42A3-AD9C-6422B7EF4BB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

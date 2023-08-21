@@ -30,6 +30,9 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -56,4 +59,57 @@
 	  <ProjectReference Include="..\GPUGraphicsMaui\GPUGraphicsMaui.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Raw\compile.bat" />
+	  <None Remove="Resources\Raw\frag.spv" />
+	  <None Remove="Resources\Raw\shader.frag" />
+	  <None Remove="Resources\Raw\shader.vert" />
+	  <None Remove="Resources\Raw\trianglehlsl.frag" />
+	  <None Remove="Resources\Raw\trianglehlsl.frag.spv" />
+	  <None Remove="Resources\Raw\trianglehlsl.vert" />
+	  <None Remove="Resources\Raw\trianglehlsl.vert.spv" />
+	  <None Remove="Resources\Raw\vert.spv" />
+	  <None Remove="Resources\.DS_Store" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Resources\Raw\compile.bat" />
+	  <BundleResource Include="Resources\Raw\frag.spv" />
+	  <BundleResource Include="Resources\Raw\shader.frag" />
+	  <BundleResource Include="Resources\Raw\shader.vert" />
+	  <BundleResource Include="Resources\Raw\trianglehlsl.frag" />
+	  <BundleResource Include="Resources\Raw\trianglehlsl.frag.spv" />
+	  <BundleResource Include="Resources\Raw\trianglehlsl.vert" />
+	  <BundleResource Include="Resources\Raw\trianglehlsl.vert.spv" />
+	  <BundleResource Include="Resources\Raw\vert.spv" />
+	  <BundleResource Include="Resources\.DS_Store" />
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\compile.bat">
+	    <LogicalName>compile.bat</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\frag.spv">
+	    <LogicalName>frag.spv</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\shader.frag">
+	    <LogicalName>shader.frag</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\shader.vert">
+	    <LogicalName>shader.vert</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\trianglehlsl.frag">
+	    <LogicalName>trianglehlsl.frag</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\trianglehlsl.frag.spv">
+	    <LogicalName>trianglehlsl.frag.spv</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\trianglehlsl.vert">
+	    <LogicalName>trianglehlsl.vert</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\trianglehlsl.vert.spv">
+	    <LogicalName>trianglehlsl.vert.spv</LogicalName>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\vert.spv">
+	    <LogicalName>vert.spv</LogicalName>
+	  </MauiAsset>
+	</ItemGroup>
 </Project>

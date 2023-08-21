@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <RootNamespace>MacVulkan</RootNamespace>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants></DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <LinkMode>None</LinkMode>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MyClass.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VulkanGenerated\Commands.cs" />
+    <Compile Include="VulkanGenerated\Constants.cs" />
+    <Compile Include="VulkanGenerated\Delegates.cs" />
+    <Compile Include="VulkanGenerated\Enums.cs" />
+    <Compile Include="VulkanGenerated\Handles.cs" />
+    <Compile Include="VulkanGenerated\Structs.cs" />
+    <Compile Include="VulkanGenerated\Unions.cs" />
+    <Compile Include="VulkanOther\Commands.cs" />
+    <Compile Include="VulkanOther\Kernel32.cs" />
+    <Compile Include="VulkanOther\Libdl.cs" />
+    <Compile Include="VulkanOther\NativeLibrary.cs" />
+    <Compile Include="VulkanOther\StdVideoH264Level.cs" />
+    <Compile Include="VulkanOther\StdVideoH265Level.cs" />
+    <Compile Include="VulkanOther\VKBool32.cs" />
+    <Compile Include="VulkanOther\VkClearColorValue.cs" />
+    <Compile Include="VulkanOther\VkExtent2D.cs" />
+    <Compile Include="VulkanOther\VkOffset2D.cs" />
+    <Compile Include="VulkanOther\VkRect2D.cs" />
+    <Compile Include="VulkanPlatform\IVulkanCompute.cs" />
+    <Compile Include="VulkanPlatform\IVulkanRenderer.cs" />
+    <Compile Include="VulkanPlatform\IVulkanSupport.cs" />
+    <Compile Include="VulkanPlatform\MacIO.cs" />
+    <Compile Include="VulkanPlatform\VulkanDebug.cs" />
+    <Compile Include="VulkanPlatform\VulkanDraw.cs" />
+    <Compile Include="VulkanPlatform\VulkanFlowTracer.cs" />
+    <Compile Include="VulkanPlatform\VulkanHelpers.cs" />
+    <Compile Include="VulkanPlatform\VulkanInstance.cs" />
+    <Compile Include="VulkanPlatform\VulkanPhysicalDevice.cs" />
+    <Compile Include="VulkanPlatform\VulkanPipeline.cs" />
+    <Compile Include="VulkanPlatform\VulkanRender.cs" />
+    <Compile Include="VulkanPlatform\VulkanSpirV.cs" />
+    <Compile Include="VulkanPlatform\VulkanStringList.cs" />
+    <Compile Include="VulkanPlatform\VulkanSupport.cs" />
+    <Compile Include="VulkanPlatform\VulkanSurface.cs" />
+    <Compile Include="VulkanPlatform\VulkanSwapChain.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+</Project>
