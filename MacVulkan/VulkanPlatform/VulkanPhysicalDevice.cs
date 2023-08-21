@@ -10,12 +10,12 @@ namespace VulkanPlatform
 
     public struct QueueFamilyIndices
     {
-        public uint graphicsFamily;
-        public uint presentFamily;
+        public int graphicsFamily;
+        public int presentFamily;
 
         public bool IsComplete()
         {
-            return graphicsFamily !=0 && presentFamily !=0;
+            return graphicsFamily >= 0 && presentFamily >=0;
         }
     }
 
@@ -31,7 +31,7 @@ namespace VulkanPlatform
             QueueFamilyIndices indices = FindQueueFamilies(physicalDevice, surface);
 
             List<VkDeviceQueueCreateInfo> queueCreateInfos = new List<VkDeviceQueueCreateInfo>();
-            HashSet<uint> uniqueQueueFamilies = new HashSet<uint>() { indices.graphicsFamily, indices.presentFamily };
+            HashSet<uint> uniqueQueueFamilies = new HashSet<uint>() { (uint)indices.graphicsFamily, (uint)indices.presentFamily };
 
             float queuePriority = 1.0f;
             foreach (uint queueFamily in uniqueQueueFamilies)
@@ -78,12 +78,12 @@ namespace VulkanPlatform
 
             fixed (VkQueue* graphicsQueuePtr = &graphicsQueue)
             {
-                VulkanNative.vkGetDeviceQueue(device, indices.graphicsFamily, 0, graphicsQueuePtr);
+                VulkanNative.vkGetDeviceQueue(device,(uint) indices.graphicsFamily, 0, graphicsQueuePtr);
             }
 
             fixed (VkQueue* presentQueuePtr = &presentQueue)
             {
-                VulkanNative.vkGetDeviceQueue(device, indices.presentFamily, 0, presentQueuePtr); // TODO queue index 0 ?¿?¿
+                VulkanNative.vkGetDeviceQueue(device,(uint) indices.presentFamily, 0, presentQueuePtr); // TODO queue index 0 ?¿?¿
             }
         }
 
@@ -194,6 +194,8 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
         public static unsafe QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
         {
             QueueFamilyIndices indices = default;
+            indices.graphicsFamily = -1;
+            indices.presentFamily = -1;
 
             uint queueFamilyCount = 0;
             VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, null);
@@ -201,7 +203,7 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
             VkQueueFamilyProperties* queueFamilies = stackalloc VkQueueFamilyProperties[(int)queueFamilyCount];
             VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
 
-            for (uint i = 0; i < queueFamilyCount; i++)
+            for (int i = 0; i < queueFamilyCount; i++)
             {
                 var queueFamily = queueFamilies[i];
                 if ((queueFamily.queueFlags & VkQueueFlags.VK_QUEUE_GRAPHICS_BIT) != 0)
@@ -210,7 +212,7 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
                 }
 
                 VkBool32 presentSupport = false;
-                VulkanHelpers.CheckErrors(VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport));
+                VulkanHelpers.CheckErrors(VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice,(uint) i, surface, &presentSupport));
 
                 if (presentSupport)
                 {

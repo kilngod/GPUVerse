@@ -38,7 +38,6 @@
     <Reference Include="Xamarin.Mac" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VulkanGenerated\Commands.cs" />
     <Compile Include="VulkanGenerated\Constants.cs" />
@@ -75,6 +74,11 @@
     <Compile Include="VulkanPlatform\VulkanSupport.cs" />
     <Compile Include="VulkanPlatform\VulkanSurface.cs" />
     <Compile Include="VulkanPlatform\VulkanSwapChain.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libMoltenVK.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>

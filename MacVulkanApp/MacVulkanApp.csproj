@@ -13,17 +13,22 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <UseSGen>true</UseSGen>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodesigningKey>Mac Developer</CodesigningKey>
-    <UseRefCounting>true</UseRefCounting>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <DefineConstants>DEBUG;</DefineConstants>
-    <WarningLevel>4</WarningLevel>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <ErrorReport>prompt</ErrorReport>    
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
     <LinkMode>None</LinkMode>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <UseRefCounting>true</UseRefCounting>
+    <UseSGen>true</UseSGen>
+    <WarningLevel>4</WarningLevel>
+    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -72,12 +77,12 @@
     <None Include="Entitlements.plist" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="GameViewController.cs" />
     <Compile Include="GameViewController.designer.cs">
       <DependentUpon>GameViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="MainMenu.xib" />
@@ -87,6 +92,14 @@
       <Project>{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}</Project>
       <Name>MacVulkan</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\vert.spv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\frag.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>

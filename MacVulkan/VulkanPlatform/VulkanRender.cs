@@ -114,7 +114,7 @@ namespace VulkanPlatform
             VkCommandPoolCreateInfo poolInfo = new VkCommandPoolCreateInfo()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamilyIndex = renderer.FamilyIndices.graphicsFamily,
+                queueFamilyIndex = (uint) renderer.FamilyIndices.graphicsFamily,
                 flags = 0, // Optional,
             };
 
