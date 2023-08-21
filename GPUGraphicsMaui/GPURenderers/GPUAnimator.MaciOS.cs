@@ -1,0 +1,39 @@
+﻿using CoreAnimation;
+using Foundation;
+using VulkanPlatform;
+
+namespace GPUGraphicsMaui.GPURenderers
+{
+    /// <summary>
+    /// Animator for iOS/Macatalyst, not sure this service useful as MTKView has a built-in service.
+    /// </summary>
+    public partial class GPUAnimator
+    {
+
+        CADisplayLink displayLink;
+
+        public void start()
+        {
+#if DEBUG
+            VulkanFlowTracer.AddItem("GPUAnimator.start");
+#endif
+
+            isRunning = true;
+            displayLink = CADisplayLink.Create(update);
+            displayLink?.AddToRunLoop(NSRunLoop.Current, NSRunLoopMode.Default);
+        }
+
+
+        public void cancel()
+        {
+#if DEBUG
+            VulkanFlowTracer.AddItem("GPUAnimator.cancel");
+#endif
+
+            isRunning = false;
+            this.displayLink?.RemoveFromRunLoop(NSRunLoop.Current, NSRunLoopMode.Default);
+            this.displayLink = null;
+        }
+    }
+}
+
