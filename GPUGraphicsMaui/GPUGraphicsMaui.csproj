@@ -20,6 +20,9 @@
 
 
 	<!-- Android -->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework.StartsWith('net7.0-android')) != true">
 		<Compile Remove="**\**\*.Android.cs" />
 		<None Include="**\**\*.Android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
@@ -71,4 +74,30 @@
 	  <ProjectReference Include="..\GPUVulkan\GPUVulkan.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Platforms\iOS\libMoltenVK.dylib" />
+	  <None Remove="Platforms\Tizen\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Platforms\iOS\libMoltenVK.dylib">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Platforms\iOS\MoltenVK_icd.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Platforms\MacCatalyst\libMoltenVK.dylib">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Platforms\MacCatalyst\MoltenVK_icd.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Platforms\iOS\libMoltenVK.dylib">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </BundleResource>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Platforms\Tizen\" />
+	</ItemGroup>
 </Project>

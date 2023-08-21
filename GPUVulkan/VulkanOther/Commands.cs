@@ -65,7 +65,7 @@ namespace GPUVulkan
                 string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 string dropPoint = "maccatalyst-x64/";
                 appDirectory = appDirectory.Substring(0, appDirectory.IndexOf(dropPoint)+ dropPoint.Length);
-                string dylibPath = System.IO.Path.Combine(appDirectory, "libMoltenVK.dylib");
+                string dylibPath = System.IO.Path.Combine(appDirectory, "Platforms/MacCatalyst/libMoltenVK.dylib");
                 return dylibPath;
                 // relative path does not work :(
                 //  return "./libMoltenVK.dylib";
