@@ -43,6 +43,8 @@ namespace VulkanPlatform
 
         /*
 
+        https://github.com/andrecunha/mandelbrot_vulkan_cpp/blob/master/src/mandelbrot.cc
+
   void CreateDescriptorSetLayout() {
     auto descriptor_set_layout_binding = vk::DescriptorSetLayoutBinding();
     descriptor_set_layout_binding
