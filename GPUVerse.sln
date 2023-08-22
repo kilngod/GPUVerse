@@ -3,19 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPUVulkan", "GPUVulkan\GPUVulkan.csproj", "{9BC41647-6FB9-4DFB-9F4E-F63F7D3BE7FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPUVulkan", "GPUVulkan\GPUVulkan.csproj", "{9BC41647-6FB9-4DFB-9F4E-F63F7D3BE7FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulkanGen", "VulkanGen\VulkanGen.csproj", "{5238ACBA-47BB-447F-AA27-B507C65DE62F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VulkanGen", "VulkanGen\VulkanGen.csproj", "{5238ACBA-47BB-447F-AA27-B507C65DE62F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPUGraphicsMaui", "GPUGraphicsMaui\GPUGraphicsMaui.csproj", "{DE4C2D13-185A-4532-AF70-631DD856ABFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPUGraphicsMaui", "GPUGraphicsMaui\GPUGraphicsMaui.csproj", "{DE4C2D13-185A-4532-AF70-631DD856ABFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPUMauiApp", "GPUMauiApp\GPUMauiApp.csproj", "{836BC874-D009-4C85-B22A-E95406BC7709}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPUMauiApp", "GPUMauiApp\GPUMauiApp.csproj", "{836BC874-D009-4C85-B22A-E95406BC7709}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacVulkan", "MacVulkan\MacVulkan.csproj", "{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacVulkanApp", "MacVulkanApp\MacVulkanApp.csproj", "{8D5CF0EE-60E6-42A3-AD9C-6422B7EF4BB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinVulkanApp", "WinVulkanApp\WinVulkanApp.csproj", "{F1660926-B7EE-4CB7-AD43-2DCCCE4390D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinVulkanApp", "WinVulkanApp\WinVulkanApp.csproj", "{F1660926-B7EE-4CB7-AD43-2DCCCE4390D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9D473ED2-06B5-42B1-A877-4AD855F57EED}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.md = ReadMe.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
