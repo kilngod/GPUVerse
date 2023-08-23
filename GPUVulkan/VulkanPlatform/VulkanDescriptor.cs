@@ -6,7 +6,7 @@ namespace VulkanPlatform
 	public static class VulkanDescriptor
 	{
 
-
+        
 
 		public unsafe static void CreateDescriptorSetLayout(this IVulkanCompute compute, ref VkDescriptorSetLayoutCreateInfo createInfo, ref VkDescriptorSetLayout layout)
         {
