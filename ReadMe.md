@@ -4,7 +4,7 @@
 
 ILGPU project has been looking for ways to support high performance rendering along with high performance Computing. We would like to visualize dynamic fluid simulations while not having to rewrite rendering code for each platform.
 
-This solution is to help the ILGPU team illustrate using Vulkan for both simulation and rendering within the ILGPU mindset.
+This solution is an illustration for the ILGPU team on how to Vulkan for both simulation and rendering..
 
 
 ### ILGPU compute targeting.
