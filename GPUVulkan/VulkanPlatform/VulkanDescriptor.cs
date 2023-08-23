@@ -8,9 +8,15 @@ namespace VulkanPlatform
 
 
 
-		public unsafe static void CreateDescriptorSetLayout(this IVulkanCompute compute, ref VkDescriptorSetLayoutBinding layoutBinding)
+		public unsafe static void CreateDescriptorSetLayout(this IVulkanCompute compute, ref VkDescriptorSetLayoutCreateInfo createInfo, ref VkDescriptorSetLayout layout)
         {
-
+            fixed (VkDescriptorSetLayoutCreateInfo* createInfoPtr = &createInfo)
+            {
+                fixed (VkDescriptorSetLayout* layoutPtr = &layout)
+                {
+                    VulkanHelpers.CheckErrors(VulkanNative.vkCreateDescriptorSetLayout(compute.Support.Device, createInfoPtr, null, layoutPtr));
+                }
+            }
         }
 
         public unsafe static void CreateDescriptorPool(this IVulkanCompute compute, ref VkDescriptorPoolCreateInfo poolCreateInfo, ref VkDescriptorPool pool)

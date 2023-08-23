@@ -123,6 +123,7 @@ namespace VulkanPlatform
             VulkanNative.vkDestroyInstance(Instance, null);
         }
 
+        
     }
 
 }
