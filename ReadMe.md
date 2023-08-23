@@ -38,7 +38,7 @@ Unlike IOS, a MacCatalyst can work with a dynamic library. That said, Apple may 
 ### Windows
 Maui windows is really a wrapper on WinRT which is based on DirectX 11 or 9. Microsoft in their finite wisdom locked down WinRT, one can grab the window handle with Vulkan and paint a few frames. But as soon a the WinRT compositor starts vulkan rendering stops.
 
-The Avalonia project (https://github.com/AvaloniaUI/) demonstrates how to render to a bitmap from Vulkan to display with their compositor on Windows. Our guess is this could be used with Maui on Windows, however performance is likely questionable. 
+The Avalonia project (https://github.com/AvaloniaUI/) demonstrates how to render to a bitmap from Vulkan to display with their compositor via DX11 on Windows. Our guess is this could be used with Maui on Windows, however performance is likely questionable. 
 
 ## Desktop (Mac, Windows, Linux)
 We've implemented sample projects for Windows and MacOS. Linux should be identical to these implementations.
