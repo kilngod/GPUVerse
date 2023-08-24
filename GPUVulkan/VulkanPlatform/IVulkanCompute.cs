@@ -17,7 +17,34 @@ namespace VulkanPlatform
         VkQueue ComputeQueue { get; }
         void SetComputeQueue(VkQueue computeQueue);
 
+        /*
+         * 
+         * 
+         // setup for vulkan
+          ProbeInstallation();
+    CreateInstance();
+    RegisterDebugReportCallback();
+    GetPhysicalDevice();
+    FindQueueFamily();
+    CreateLogicalDevice();
+    GetQueue();
+        // compute
+    CreateBuffer();
+    AllocateDeviceMemory();
+    BindDeviceMemory();
+    CreateDescriptorSetLayout();
+    CreateDescriptorPool();
+    CreateDescriptorSets();
+    ConnectBufferWithDescriptorSets();
+    CreateShaderModule("shaders/comp.spv");
+    CreateComputePipeline();
+    CreateCommandPool();
+    CreateCommandBuffers();
+    FillCommandBuffer();
+    SubmitAndWait();
+    SaveRenderedImage("mandelbrot.png");
 
+        */
     }
 }
 

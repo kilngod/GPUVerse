@@ -10,8 +10,14 @@ namespace VulkanPlatform
 		public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags memoryFlags)
 		{
 
-            VkMemoryPropertyFlags memoryPropertyFlags = memoryProperties.GetMemoryType(1).propertyFlags;
+            VkMemoryPropertyFlags memoryPropertyFlags = memoryProperties.GetMemoryType(0).propertyFlags;
          
+            if (((memory_type_bits & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
+            {
+                return 0;
+            }
+
+            memoryPropertyFlags = memoryProperties.GetMemoryType(1).propertyFlags;
             if (((memory_type_bits << 1 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
             {
                 return 1;
@@ -64,7 +70,6 @@ namespace VulkanPlatform
             {
                 return 9;
             }
-
             memoryPropertyFlags = memoryProperties.GetMemoryType(10).propertyFlags;
             if (((memory_type_bits << 10 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
             {
