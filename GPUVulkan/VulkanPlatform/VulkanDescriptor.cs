@@ -42,8 +42,9 @@ namespace VulkanPlatform
 
         }
 
-        public unsafe static ConnectBufferWithDescriptorSet(this IVulkanCompute compute, ref List<VkWriteDescriptorSet> writeSet, List<VkCopyDescriptorSet> copySet, ref VkBuffer buffer, ulong offset, ulong range)
+        public unsafe static void ConnectBufferWithDescriptorSet(this IVulkanCompute compute, ref List<VkWriteDescriptorSet> writeSet, List<VkCopyDescriptorSet> copySet, ref VkBuffer buffer, ulong offset, ulong range)
         {
+            /*
             VkDescriptorBufferInfo bufferInfo = new VkDescriptorBufferInfo()
             {
                 buffer = buffer,
@@ -57,6 +58,7 @@ namespace VulkanPlatform
 
                 VulkanNative.vkUpdateDescriptorSets(compute.Support.Device, writeSet.Count,, copySet.Count, VulkanHelpers.StringListToByteArrary);
             }
+            */
         }
 
 		public unsafe static void WriteDescriptorSets(this IVulkanCompute compute, List<VkWriteDescriptorSet> writeSets)
