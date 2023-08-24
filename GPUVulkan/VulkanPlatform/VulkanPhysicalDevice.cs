@@ -1,7 +1,11 @@
-﻿using System;
+﻿// Ignore Spelling: Indices
+
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using GPUVulkan;
+using GPUVulkan.VulkanPlatform;
 #nullable disable
 
 
@@ -10,12 +14,21 @@ namespace VulkanPlatform
 
     public struct QueueFamilyIndices
     {
-        public uint? graphicsFamily;
-        public uint? presentFamily;
+        public int graphicsFamily;
+        public int presentFamily;
+        public int computeFamily;
+       
 
-        public bool IsComplete()
+        public bool IsGraphicsComplete()
         {
-            return graphicsFamily.HasValue && presentFamily.HasValue;
+            return graphicsFamily>=0 && presentFamily>=0;
+        }
+
+        public QueueFamilyIndices()
+        {
+            graphicsFamily = -1;
+            presentFamily = -1;
+            computeFamily = -1;
         }
     }
 
@@ -23,7 +36,7 @@ namespace VulkanPlatform
     public static class VulkanPhysicalDevice
 	{
 
-        public unsafe static void CreateLogicalDevice(VkPhysicalDevice physicalDevice, List<string> deviceExtensions, VkSurfaceKHR surface,ref VkDevice device, ref VkQueue graphicsQueue, ref VkQueue presentQueue)
+        public unsafe static void CreateLogicalDevice(VkPhysicalDevice physicalDevice, List<string> deviceExtensions, VkSurfaceKHR surface, ref VkDevice device, ref VkQueue graphicsQueue, ref VkQueue presentQueue)
         {
 #if DEBUG
             VulkanFlowTracer.AddItem("VulkanPhysicalDevice.CreateLogicalDevice");
@@ -31,7 +44,7 @@ namespace VulkanPlatform
             QueueFamilyIndices indices = FindQueueFamilies(physicalDevice, surface);
 
             List<VkDeviceQueueCreateInfo> queueCreateInfos = new List<VkDeviceQueueCreateInfo>();
-            HashSet<uint> uniqueQueueFamilies = new HashSet<uint>() { indices.graphicsFamily.Value, indices.presentFamily.Value };
+            HashSet<int> uniqueQueueFamilies = new HashSet<int>() { indices.graphicsFamily, indices.presentFamily };
 
             float queuePriority = 1.0f;
             foreach (uint queueFamily in uniqueQueueFamilies)
@@ -76,15 +89,10 @@ namespace VulkanPlatform
                 VulkanHelpers.CheckErrors(VulkanNative.vkCreateDevice(physicalDevice, &createInfo, null, devicePtr));
             }
 
-            fixed (VkQueue* graphicsQueuePtr = &graphicsQueue)
-            {
-                VulkanNative.vkGetDeviceQueue(device, indices.graphicsFamily.Value, 0, graphicsQueuePtr);
-            }
+            device.GetQueue(indices.graphicsFamily, 0, ref graphicsQueue);
 
-            fixed (VkQueue* presentQueuePtr = &presentQueue)
-            {
-                VulkanNative.vkGetDeviceQueue(device, indices.presentFamily.Value, 0, presentQueuePtr); // TODO queue index 0 ?¿?¿
-            }
+            device.GetQueue(indices.presentFamily, 0, ref presentQueue);
+
         }
 
 
@@ -182,7 +190,7 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
                 swapChainAdequate = (swapChainSupport.formats.Length != 0 && swapChainSupport.presentModes.Length != 0);
             }
 
-            return indices.IsComplete() && extensionsSupported && swapChainAdequate;
+            return indices.IsGraphicsComplete() && extensionsSupported && swapChainAdequate;
         }
 
 
@@ -201,7 +209,7 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
             VkQueueFamilyProperties* queueFamilies = stackalloc VkQueueFamilyProperties[(int)queueFamilyCount];
             VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
 
-            for (uint i = 0; i < queueFamilyCount; i++)
+            for (int i = 0; i < queueFamilyCount; i++)
             {
                 var queueFamily = queueFamilies[i];
                 if ((queueFamily.queueFlags & VkQueueFlags.VK_QUEUE_GRAPHICS_BIT) != 0)
@@ -210,14 +218,14 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
                 }
 
                 VkBool32 presentSupport = false;
-                VulkanHelpers.CheckErrors(VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport));
+                VulkanHelpers.CheckErrors(VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice,(uint) i, surface, &presentSupport));
 
                 if (presentSupport)
                 {
                     indices.presentFamily = i;
                 }
 
-                if (indices.IsComplete())
+                if (indices.IsGraphicsComplete())
                 {
                     break;
                 }

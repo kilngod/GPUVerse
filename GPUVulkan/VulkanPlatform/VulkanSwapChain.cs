@@ -116,7 +116,7 @@ namespace VulkanPlatform {
             createInfo.imageArrayLayers = 1;
             createInfo.imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
-            QueueFamilyIndices indices = VulkanPhysicalDevice.FindQueueFamilies(renderer.VSupport.PhysicalDevice, surface);
+            QueueFamilyIndIces indices = VulkanPhysicalDevice.FindQueueFamilies(renderer.VSupport.PhysicalDevice, surface);
             uint* queueFamilyIndices = stackalloc uint[] { indices.graphicsFamily.Value, indices.presentFamily.Value };
 
             if (indices.graphicsFamily != indices.presentFamily)
