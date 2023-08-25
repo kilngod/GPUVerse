@@ -41,7 +41,6 @@ namespace VulkanPlatform
         public VulkanStringList DeviceExtensions { get { return _deviceExtensions; } }
 
 
-
         // Vulkan objects
 
         private VkDevice _device;
@@ -122,6 +121,10 @@ namespace VulkanPlatform
             VulkanNative.vkDestroyInstance(Instance, null);
         }
 
+        public void InitializeComputeQueue()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

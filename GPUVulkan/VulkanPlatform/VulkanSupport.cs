@@ -123,7 +123,10 @@ namespace VulkanPlatform
             VulkanNative.vkDestroyInstance(Instance, null);
         }
 
-        
+        public void InitializeComputeQueue()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

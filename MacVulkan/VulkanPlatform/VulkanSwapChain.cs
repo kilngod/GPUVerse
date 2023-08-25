@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using GPUVulkan;
 
 
+
 namespace VulkanPlatform { 
 
     public struct SwapChainSupportDetails
@@ -49,7 +50,7 @@ namespace VulkanPlatform {
             createInfo.imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
             renderer.FamilyIndices = VulkanPhysicalDevice.FindQueueFamilies(renderer.VSupport.PhysicalDevice, surface);
-            uint* queueFamilyIndices = stackalloc uint[] { (uint) renderer.FamilyIndices.graphicsFamily, (uint) renderer.FamilyIndices.presentFamily };
+            uint* queueFamilyIndices = stackalloc uint[] {(uint) renderer.FamilyIndices.graphicsFamily,(uint) renderer.FamilyIndices.presentFamily };
 
             if (renderer.FamilyIndices.graphicsFamily != renderer.FamilyIndices.presentFamily)
             {
@@ -116,7 +117,7 @@ namespace VulkanPlatform {
             createInfo.imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
             QueueFamilyIndices indices = VulkanPhysicalDevice.FindQueueFamilies(renderer.VSupport.PhysicalDevice, surface);
-            uint* queueFamilyIndices = stackalloc uint[] { (uint)indices.graphicsFamily,(uint) indices.presentFamily };
+            uint* queueFamilyIndices = stackalloc uint[] { (uint) indices.graphicsFamily, (uint) indices.presentFamily };
 
             if (indices.graphicsFamily != indices.presentFamily)
             {

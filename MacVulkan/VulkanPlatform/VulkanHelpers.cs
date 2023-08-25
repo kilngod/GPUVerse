@@ -7,6 +7,7 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
+
 namespace VulkanPlatform
 {
     public unsafe static class VulkanHelpers
@@ -21,9 +22,18 @@ namespace VulkanPlatform
 
         }
 
+        public static void ListToByteArray<T>(List<T> values, ref IntPtr* stackArrayIntPtr)
+        {
+            for (int i = 0; i < values.Count; i++)
+            {
+                Marshal.StructureToPtr<T>(values[i], stackArrayIntPtr[i],false);
+                
+            }
+        }
+
         public static byte* ToPointer(this string text)
         {
-            return (byte*)System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi(text);
+            return (byte*)Marshal.StringToHGlobalAnsi(text);
         }
 
         public static uint Version(uint major, uint minor, uint patch)

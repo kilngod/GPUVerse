@@ -356,8 +356,8 @@ VK_MVK_moltenvk
 
 
 
-            Marshal.FreeHGlobal((nint)appInfo.pApplicationName);
-            Marshal.FreeHGlobal((nint)appInfo.pEngineName);
+            Marshal.FreeHGlobal((IntPtr)appInfo.pApplicationName);
+            Marshal.FreeHGlobal((IntPtr)appInfo.pEngineName);
 
 
 

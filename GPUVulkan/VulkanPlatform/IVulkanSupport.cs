@@ -35,6 +35,8 @@ namespace VulkanPlatform
 
         void CleanupVulkanSupport();
 
+        void InitializeComputeQueue();
+
     }
 }
 

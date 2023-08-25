@@ -5,7 +5,7 @@ namespace VulkanPlatform
 {
     public interface IVulkanCompute
     {
-        public IVulkanSupport Support { get; }
+        IVulkanSupport Support { get; }
 
         VkCommandPool CommandPool { get; set; }
         VkCommandBuffer[] CommandBuffers { get; set; }

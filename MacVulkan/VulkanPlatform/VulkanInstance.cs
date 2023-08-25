@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+
 namespace VulkanPlatform
 {
     public static class VulkanInstance
@@ -362,6 +363,7 @@ VK_MVK_moltenvk
 
 
         }
+
 
 
         public static unsafe void ConfigureDevices(this IVulkanRenderer renderer, VkSurfaceKHR surface)

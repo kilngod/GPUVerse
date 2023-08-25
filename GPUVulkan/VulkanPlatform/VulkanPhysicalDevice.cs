@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using GPUVulkan;
-using GPUVulkan.VulkanPlatform;
 #nullable disable
 
 
@@ -24,11 +23,16 @@ namespace VulkanPlatform
             return graphicsFamily>=0 && presentFamily>=0;
         }
 
-        public QueueFamilyIndices()
+        public bool IsComputeComplete()
         {
-            graphicsFamily = -1;
-            presentFamily = -1;
-            computeFamily = -1;
+            return computeFamily >= 0;
+        }
+
+        public QueueFamilyIndices(int graphicsFamily = -1, int presentFamily = -1, int computeFamily = -1)
+        {
+            this.graphicsFamily = graphicsFamily;
+            this.presentFamily = presentFamily;
+            this.computeFamily = computeFamily;
         }
     }
 
