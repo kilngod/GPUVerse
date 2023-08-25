@@ -12,8 +12,8 @@ namespace WinVulkanApp
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             HelloTriangle helloTriangle = new HelloTriangle();
-            Form form = helloTriangle.InitWindow();
-            helloTriangle.InitVulkan();
+            
+          
             helloTriangle.Run();
             
         }
