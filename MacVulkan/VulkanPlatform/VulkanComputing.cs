@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GPUVulkan;
-using Microsoft.VisualBasic;
+
 
 namespace VulkanPlatform
 {
-#nullable disable
+
     public static class VulkanComputing
     {
 
