@@ -85,25 +85,17 @@ namespace WinVulkanApp
 
             CreatePipeline(computeShaderList);
 
-            Compute();
-            /*
-   
-         
-          CreateCommandPool();
-          CreateCommandBuffers();
-          FillCommandBuffer();
-          SubmitAndWait();
-          SaveRenderedImage("mandelbrot.png");
-          */
+           
+            
 
         }
 
         private void Compute()
         {
-            CreateCommandPool();
-            CreateCommandBuffers();
-            FillCommandBuffer();
-            SubmitAndWait();
+            this.CreateCommandPool();
+            this.CreateCommandBuffers();
+            this.FillCommandBuffer();
+            this.SubmitAndWait();
             SaveRenderedImage("mandelbrot.png");
         }
 

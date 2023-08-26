@@ -5,16 +5,18 @@ namespace VulkanPlatform
 {
     public interface IVulkanCompute
     {
+        int ComputeFamilyIndex { get; }
         IVulkanSupport Support { get; }
 
         VkCommandPool CommandPool { get; set; }
+
+        int ComputeCommandBuffers { get; set; }
         VkCommandBuffer[] CommandBuffers { get; set; }
         VkPipelineLayout PipelineLayout { get; set; }
         VkPipeline ComputePipeline { get; set; }
         VkDescriptorSet ComputeDescriptor {get;set;}
         VkDescriptorSetLayout ComputeLayout { get; set; }
         VkSemaphore ComputeSemaphore { get; set; }
-
         VkQueue ComputeQueue { get; }
         void SetupComputePipeline();
 

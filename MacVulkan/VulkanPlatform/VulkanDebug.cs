@@ -10,8 +10,16 @@ using System.Threading.Tasks;
 namespace VulkanPlatform
 {
 #if DEBUG
-    public static class VulkanDebug
+
+     public static class VulkanDebug
     {
+
+        delegate VkBool32 DebugCallbackDelegate(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity,
+          VkDebugUtilsMessageTypeFlagsEXT messageType,
+          VkDebugUtilsMessengerCallbackDataEXT pCallbackData,
+          IntPtr pUserData);
+
+
 
         private static VkDebugUtilsMessengerEXT debugMessenger;
 
@@ -19,32 +27,34 @@ namespace VulkanPlatform
 
         public static unsafe void SetupDebugMessenger(this IVulkanSupport support)
         {
+            DebugCallbackDelegate localDelegate = new DebugCallbackDelegate(DebugCallback);
+
             VulkanFlowTracer.AddItem("VulkanDebug.SetupDebugMessenger");
             fixed (VkDebugUtilsMessengerEXT* debugMessengerPtr = &debugMessenger)
             {
                 var funcPtr = VulkanNative.vkGetInstanceProcAddr(support.Instance, "vkCreateDebugUtilsMessengerEXT".ToPointer());
                 if (funcPtr != IntPtr.Zero)
                 {
-/*
+
                     VkDebugUtilsMessengerCreateInfoEXT createInfo = new VkDebugUtilsMessengerCreateInfoEXT()
                     {
                         sType = VkStructureType.VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
                         messageSeverity = VkDebugUtilsMessageSeverityFlagsEXT.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VkDebugUtilsMessageSeverityFlagsEXT.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VkDebugUtilsMessageSeverityFlagsEXT.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
                         messageType = VkDebugUtilsMessageTypeFlagsEXT.VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VkDebugUtilsMessageTypeFlagsEXT.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VkDebugUtilsMessageTypeFlagsEXT.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
-                        pfnUserCallback = Marshal.GetFunctionPointerForDelegate(DebugCallback),
+                        pfnUserCallback = Marshal.GetFunctionPointerForDelegate(localDelegate),
                         pUserData = null
                     };
                     VulkanHelpers.CheckErrors(VulkanNative.vkCreateDebugUtilsMessengerEXT(support.Instance, &createInfo, null, debugMessengerPtr));
-*/
                 }
             }
         }
 
 
+
         private unsafe static VkBool32 DebugCallback(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity,
             VkDebugUtilsMessageTypeFlagsEXT messageType,
             VkDebugUtilsMessengerCallbackDataEXT pCallbackData,
-            void* pUserData)
+            IntPtr pUserData)
         {
             VulkanFlowTracer.AddItem("VulkanDebug.DebugCallback");
 

@@ -77,6 +77,8 @@
     <Compile Include="VulkanPlatform\VulkanSwapChain.cs" />
     <Compile Include="VulkanPlatform\VulkanBuffer.cs" />
     <Compile Include="VulkanPlatform\VulkanQueues.cs" />
+    <Compile Include="VulkanPlatform\VulkanDescriptor.cs" />
+    <Compile Include="VulkanPlatform\VulkanComputing.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="libMoltenVK.dylib">

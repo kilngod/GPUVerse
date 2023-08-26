@@ -5,7 +5,7 @@ namespace VulkanPlatform
 {
 	public static class VulkanBuffer
 	{
-		public unsafe static VkBuffer* CreateBuffer(this IVulkanSupport support, ulong bufferSize, VkBufferUsageFlags usageFlags = VkBufferUsageFlags.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VkSharingMode mode = VkSharingMode.VK_SHARING_MODE_EXCLUSIVE)
+		public unsafe static void CreateBuffer(this IVulkanSupport support, ulong bufferSize, ref VkBuffer buffer, VkBufferUsageFlags usageFlags = VkBufferUsageFlags.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VkSharingMode mode = VkSharingMode.VK_SHARING_MODE_EXCLUSIVE)
 		{
 			VkBufferCreateInfo createInfo = new VkBufferCreateInfo()
 			{
@@ -15,11 +15,12 @@ namespace VulkanPlatform
 				 usage = usageFlags
             };
 
-			VkBuffer* bufferResult = default;
+			fixed (VkBuffer* bufferPtr = &buffer)
+			{
 
-			VulkanNative.vkCreateBuffer(support.Device, &createInfo, null, bufferResult);
-
-			return bufferResult;
+				VulkanNative.vkCreateBuffer(support.Device, &createInfo, null, bufferPtr);
+			}
+			
 			
 		}
 	}

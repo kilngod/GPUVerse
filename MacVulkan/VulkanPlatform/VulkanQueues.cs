@@ -12,7 +12,7 @@ namespace VulkanPlatform
     {
         public int graphicsFamily;
         public int presentFamily;
-        public int computeFamily;
+      
 
 
         public bool IsGraphicsComplete()
@@ -21,23 +21,22 @@ namespace VulkanPlatform
         }
 
 
-        public bool IsComputeComplete()
-        {
-            return computeFamily >= 0;
-        }
+      
 
 
-        public QueueFamilyIndices(int graphicsFamily = -1, int presentFamily = -1, int computeFamily = -1)
+        public QueueFamilyIndices(int graphicsFamily = -1, int presentFamily = -1)
         {
             this.graphicsFamily = graphicsFamily;
             this.presentFamily = presentFamily;
-            this.computeFamily = computeFamily;
         }
     }
+
+
+
+  
+
     public static class VulkanQueues
     {
-
-
         public static unsafe QueueFamilyIndices FindGraphicsQueueFamilies(this VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
         {
             QueueFamilyIndices indices = default;
@@ -72,6 +71,7 @@ namespace VulkanPlatform
 
             return indices;
         }
+
         public unsafe static uint FindQueueFamilyIndex(this VkPhysicalDevice device, VkQueueFlags queueFlag)
         {
             uint queueFamilyCount = 0;

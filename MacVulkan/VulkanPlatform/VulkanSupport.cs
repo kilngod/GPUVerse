@@ -41,6 +41,7 @@ namespace VulkanPlatform
         public VulkanStringList DeviceExtensions { get { return _deviceExtensions; } }
 
 
+
         // Vulkan objects
 
         private VkDevice _device;
@@ -63,14 +64,12 @@ namespace VulkanPlatform
 
         public VkPhysicalDevice PhysicalDevice { get { return _physicalDevice; } }
 
-      
         public void SetPhysicalDevice(VkPhysicalDevice physicalDevice)
         {
             _physicalDevice = physicalDevice;
         }
 
 
-      
         public VulkanSupport(DeliveryPlatform platform)
         {
             _platform = platform;
@@ -124,7 +123,7 @@ namespace VulkanPlatform
             VulkanNative.vkDestroyInstance(Instance, null);
         }
 
-       
+      
     }
 
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MacVulkan.VulkanPlatform
+namespace VulkanPlatform
 {
 	public static class MacIO
 	{

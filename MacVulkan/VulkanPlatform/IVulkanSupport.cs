@@ -35,7 +35,7 @@ namespace VulkanPlatform
 
         void CleanupVulkanSupport();
 
-      
+        
 
     }
 }

@@ -7,11 +7,10 @@ using System.Runtime.InteropServices;
 using GPUVulkan;
 
 
-
 namespace VulkanPlatform
 {
 
-  
+   
 
 
     public static class VulkanPhysicalDevice
@@ -160,7 +159,7 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
 
         private static unsafe bool IsPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, List<string> requiredDeviceExtensions)
         {
-            QueueFamilyIndices indices = FindQueueFamilies(physicalDevice, surface);
+            QueueFamilyIndices indices = physicalDevice.FindGraphicsQueueFamilies(surface);
 
             bool extensionsSupported = CheckPhysicalDeviceExtensionSupport(physicalDevice,requiredDeviceExtensions);
 
@@ -179,41 +178,6 @@ VK_ANDROID_external_memory_android_hardware_buffer*/
 
 
 
-
-        public static unsafe QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
-        {
-            QueueFamilyIndices indices = default;
-
-            uint queueFamilyCount = 0;
-            VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, null);
-
-            VkQueueFamilyProperties* queueFamilies = stackalloc VkQueueFamilyProperties[(int)queueFamilyCount];
-            VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
-
-            for (int i = 0; i < queueFamilyCount; i++)
-            {
-                var queueFamily = queueFamilies[i];
-                if ((queueFamily.queueFlags & VkQueueFlags.VK_QUEUE_GRAPHICS_BIT) != 0)
-                {
-                    indices.graphicsFamily = i;
-                }
-
-                VkBool32 presentSupport = false;
-                VulkanHelpers.CheckErrors(VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice,(uint) i, surface, &presentSupport));
-
-                if (presentSupport)
-                {
-                    indices.presentFamily = i;
-                }
-
-                if (indices.IsGraphicsComplete())
-                {
-                    break;
-                }
-            }
-
-            return indices;
-        }
 
     }
 }

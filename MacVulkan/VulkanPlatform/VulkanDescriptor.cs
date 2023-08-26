@@ -30,7 +30,7 @@ namespace VulkanPlatform
             }
         }
 
-		public unsafe static void SetupDescriptor(this IVulkanCompute compute, ref VkDescriptorSetAllocateInfo allocInfo, ref VkDescriptorSet descriptorSet)
+		public unsafe static void AllocateDescriptorSets(this IVulkanCompute compute, ref VkDescriptorSetAllocateInfo allocInfo, ref VkDescriptorSet descriptorSet)
 		{
 			fixed (VkDescriptorSetAllocateInfo* allocPtr = &allocInfo)
 			{
@@ -42,29 +42,31 @@ namespace VulkanPlatform
 
         }
 
-        public unsafe static void ConnectBufferWithDescriptorSet(this IVulkanCompute compute, ref List<VkWriteDescriptorSet> writeSet, List<VkCopyDescriptorSet> copySet, ref VkBuffer buffer, ulong offset, ulong range)
+        public unsafe static void UpdateDescriptorSet(this IVulkanCompute compute, ref VkWriteDescriptorSet writeSet, ref VkCopyDescriptorSet copySet)
         {
-            /*
-            VkDescriptorBufferInfo bufferInfo = new VkDescriptorBufferInfo()
+            fixed (VkWriteDescriptorSet* writeSetPtr = &writeSet)
             {
-                buffer = buffer,
-                offset = offset,
-                range = range
-            };
-            VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet() { descriptorCount=writeSet.Count, };
-
-            fixed (VkWriteDescriptorSet* writeSetPtr = &writeDescriptorSet)
-            {
-
-                VulkanNative.vkUpdateDescriptorSets(compute.Support.Device, writeSet.Count,, copySet.Count, VulkanHelpers.StringListToByteArrary);
+                fixed (VkCopyDescriptorSet* copySetPtr = &copySet)
+                {
+                    VulkanNative.vkUpdateDescriptorSets(compute.Support.Device,1, writeSetPtr, 1, copySetPtr);
+                }
             }
-            */
+
         }
 
-		public unsafe static void WriteDescriptorSets(this IVulkanCompute compute, List<VkWriteDescriptorSet> writeSets)
-		{
+        public unsafe static void UpdateDescriptorSets(this IVulkanCompute compute, ref VkWriteDescriptorSet[] writeSet, ref VkCopyDescriptorSet[] copySet)
+        {
+            fixed (VkWriteDescriptorSet* writeSetPtr = &writeSet[0])
+            {
+                fixed (VkCopyDescriptorSet* copySetPtr = &copySet[0])
+                {
+                    VulkanNative.vkUpdateDescriptorSets(compute.Support.Device,(uint) writeSet.Length, writeSetPtr, (uint)copySet.Length, copySetPtr);
+                }
+            }
 
-		}
+        }
+
+
 
         /*
 

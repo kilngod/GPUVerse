@@ -365,7 +365,6 @@ VK_MVK_moltenvk
         }
 
 
-
         public static unsafe void ConfigureDevices(this IVulkanRenderer renderer, VkSurfaceKHR surface)
         {
 #if DEBUG

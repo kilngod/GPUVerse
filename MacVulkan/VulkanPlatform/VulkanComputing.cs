@@ -37,7 +37,7 @@ namespace VulkanPlatform
             VkCommandPoolCreateInfo poolInfo = new VkCommandPoolCreateInfo()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamliyIndex = (uint)compute.ComputeFamilyIndex,
+                queueFamilyIndex = (uint)compute.ComputeFamilyIndex,
                 flags = 0, // Optional,
             };
 
@@ -89,15 +89,35 @@ namespace VulkanPlatform
                     color = new VkClearColorValue(0.0f, 0.0f, 0.0f, 1.0f),
                 };
 
-               
+                VkRenderPassBeginInfo renderPassInfo = new VkRenderPassBeginInfo()
+                {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+                    renderPass = compute.RenderPass,
+                    framebuffer = compute.FrameBuffers[i],
+                    renderArea = new VkRect2D(0, 0, compute.SurfaceExtent2D.width, compute.SurfaceExtent2D.height),
+                    clearValueCount = 1,
+                    pClearValues = &clearColor,
+                };
+
+                VulkanNative.vkCmdBeginRenderPass(compute.CommandBuffers[i], &renderPassInfo, VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE);
 
                 // Draw
-                VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.ComputePipeline);
+                VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.Pipeline);
 
               
 
                 VulkanHelpers.CheckErrors(VulkanNative.vkEndCommandBuffer(compute.CommandBuffers[i]));
             }
+        }
+
+        public static void FillCommandBuffer(this IVulkanCompute compute)
+        {
+
+        }
+
+        public static void SubmitAndWait(this IVulkanCompute compute)
+        {
+
         }
     }
 }
