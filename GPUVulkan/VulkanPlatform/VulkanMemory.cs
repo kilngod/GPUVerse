@@ -79,7 +79,7 @@ namespace VulkanPlatform
 
         }
 
-		public static unsafe VkDeviceMemory* AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer)
+		public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory)
 		{
 			VkMemoryRequirements memoryRequirements = default(VkMemoryRequirements);
 			VkPhysicalDeviceMemoryProperties memoryProperties = default(VkPhysicalDeviceMemoryProperties);
@@ -95,11 +95,11 @@ namespace VulkanPlatform
 				allocationSize = memoryRequirements.size
 			};
 
-            VkDeviceMemory* memoryDevice = default(VkDeviceMemory*);
+            fixed (VkDeviceMemory* memoryDevicePtr = &deviceMemory)
+            {
+                VulkanHelpers.CheckErrors(VulkanNative.vkAllocateMemory(support.Device, &allocateInfo, null, memoryDevicePtr));
 
-            VulkanHelpers.CheckErrors(VulkanNative.vkAllocateMemory(support.Device, &allocateInfo, null, memoryDevice));
-
-            return memoryDevice;
+            }
 
 		}
 

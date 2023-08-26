@@ -11,32 +11,7 @@ using GPUVulkan;
 namespace VulkanPlatform
 {
 
-    public struct QueueFamilyIndices
-    {
-        public int graphicsFamily;
-        public int presentFamily;
-        public int computeFamily;
-       
-
-        public bool IsGraphicsComplete()
-        {
-            return graphicsFamily>=0 && presentFamily>=0;
-        }
-
-
-        public bool IsComputeComplete()
-        {
-            return computeFamily >= 0;
-        }
-
-
-        public QueueFamilyIndices(int graphicsFamily = -1, int presentFamily = -1, int computeFamily = -1)
-        {
-            this.graphicsFamily = graphicsFamily;
-            this.presentFamily = presentFamily;
-            this.computeFamily = computeFamily;
-        }
-    }
+  
 
 
     public static class VulkanPhysicalDevice
@@ -47,7 +22,7 @@ namespace VulkanPlatform
 #if DEBUG
             VulkanFlowTracer.AddItem("VulkanPhysicalDevice.CreateLogicalDevice");
 #endif
-            QueueFamilyIndices indices = FindQueueFamilies(physicalDevice, surface);
+            QueueFamilyIndices indices = physicalDevice.FindGraphicsQueueFamilies(surface);
 
             List<VkDeviceQueueCreateInfo> queueCreateInfos = new List<VkDeviceQueueCreateInfo>();
             HashSet<int> uniqueQueueFamilies = new HashSet<int>() { indices.graphicsFamily, indices.presentFamily };

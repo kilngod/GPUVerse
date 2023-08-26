@@ -14,8 +14,9 @@ namespace VulkanPlatform
         VkDescriptorSet ComputeDescriptor {get;set;}
         VkDescriptorSetLayout ComputeLayout { get; set; }
         VkSemaphore ComputeSemaphore { get; set; }
+
         VkQueue ComputeQueue { get; }
-        void SetupPipeline();
+        void SetupComputePipeline();
 
         /*
          * 

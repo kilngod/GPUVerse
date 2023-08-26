@@ -10,23 +10,18 @@ namespace VulkanPlatform
 {
     public static class VulkanPipeline
     {
-        public static unsafe VkShaderModule CreateShaderModule(IVulkanRenderer renderer, byte[] code)
+      
+        public static unsafe void CreatePipelineLayout(this VkDevice device, ref VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo, ref VkPipelineLayout pipelineLayout) 
         {
-            VkShaderModuleCreateInfo createInfo = new VkShaderModuleCreateInfo();
-            createInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-            createInfo.codeSize = (UIntPtr)code.Length;
-            
-            fixed (byte* sourcePointer = code)
+            fixed (VkPipelineLayoutCreateInfo* createInfoPtr = &pipelineLayoutCreateInfo)
             {
-                createInfo.pCode = (uint*)sourcePointer;
+                fixed (VkPipelineLayout* pipelineLayoutPtr = &pipelineLayout)
+                {
+                    VulkanHelpers.CheckErrors(VulkanNative.vkCreatePipelineLayout(device, createInfoPtr, null, pipelineLayoutPtr));
+                }
             }
-
-            VkShaderModule shaderModule = default(VkShaderModule);
-            
-            VulkanHelpers.CheckErrors(VulkanNative.vkCreateShaderModule(renderer.VSupport.Device, &createInfo, null, &shaderModule));
-
-            return shaderModule;
         }
+
 
         public static unsafe void CreateGraphicsPipeline(this IVulkanRenderer renderer, List<VulkanSpirV> shaderSource)
         {
@@ -151,11 +146,8 @@ namespace VulkanPlatform
             };
             VkPipelineLayout pipelineLayout = default( VkPipelineLayout );
 
-            VkPipelineLayout* pipelineLayoutPtr = &pipelineLayout;
-            {
-                VulkanHelpers.CheckErrors(VulkanNative.vkCreatePipelineLayout(renderer.VSupport.Device, &pipelineLayoutInfo, null, pipelineLayoutPtr));
-            }
-
+            renderer.VSupport.Device.CreatePipelineLayout(ref pipelineLayoutInfo, ref pipelineLayout);
+          
             renderer.PipelineLayout = pipelineLayout;
 
 
@@ -164,7 +156,7 @@ namespace VulkanPlatform
 
             for (int i = 0; i < shaderSource.Count; i++)
             {
-                shaderModules[i] = CreateShaderModule(renderer, shaderSource[i].SpirVByte);
+                shaderModules[i] = renderer.VSupport.Device.CreateShaderModule(shaderSource[i].SpirVByte);
                 stageInfo[i] = new VkPipelineShaderStageCreateInfo()
                 {
                     sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,

@@ -7,10 +7,72 @@ using GPUVulkan;
 
 namespace VulkanPlatform
 {
+
+    public struct QueueFamilyIndices
+    {
+        public int graphicsFamily;
+        public int presentFamily;
+      
+
+
+        public bool IsGraphicsComplete()
+        {
+            return graphicsFamily >= 0 && presentFamily >= 0;
+        }
+
+
+      
+
+
+        public QueueFamilyIndices(int graphicsFamily = -1, int presentFamily = -1)
+        {
+            this.graphicsFamily = graphicsFamily;
+            this.presentFamily = presentFamily;
+        }
+    }
+
+
+
+  
+
     public static class VulkanQueues
     {
+        public static unsafe QueueFamilyIndices FindGraphicsQueueFamilies(this VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+        {
+            QueueFamilyIndices indices = default;
 
-        public unsafe static uint FindComputeQueueFamilyIndex(this VkPhysicalDevice device, VkQueueFlags queueFlag)
+            uint queueFamilyCount = 0;
+            VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, null);
+
+            VkQueueFamilyProperties* queueFamilies = stackalloc VkQueueFamilyProperties[(int)queueFamilyCount];
+            VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
+
+            for (int i = 0; i < queueFamilyCount; i++)
+            {
+                var queueFamily = queueFamilies[i];
+                if ((queueFamily.queueFlags & VkQueueFlags.VK_QUEUE_GRAPHICS_BIT) != 0)
+                {
+                    indices.graphicsFamily = i;
+                }
+
+                VkBool32 presentSupport = false;
+                VulkanHelpers.CheckErrors(VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, (uint)i, surface, &presentSupport));
+
+                if (presentSupport)
+                {
+                    indices.presentFamily = i;
+                }
+
+                if (indices.IsGraphicsComplete())
+                {
+                    break;
+                }
+            }
+
+            return indices;
+        }
+
+        public unsafe static uint FindQueueFamilyIndex(this VkPhysicalDevice device, VkQueueFlags queueFlag)
         {
             uint queueFamilyCount = 0;
 

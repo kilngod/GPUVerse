@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{F0C1F7C6-B046-4878-B6DA-0860B4CA1512}</ProjectGuid>
@@ -24,7 +24,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <UseSGen>false</UseSGen>
@@ -68,7 +69,7 @@
     <Compile Include="VulkanPlatform\VulkanInstance.cs" />
     <Compile Include="VulkanPlatform\VulkanPhysicalDevice.cs" />
     <Compile Include="VulkanPlatform\VulkanPipeline.cs" />
-    <Compile Include="VulkanPlatform\VulkanRender.cs" />
+    <Compile Include="VulkanPlatform\VulkanRendering.cs" />
     <Compile Include="VulkanPlatform\VulkanSpirV.cs" />
     <Compile Include="VulkanPlatform\VulkanStringList.cs" />
     <Compile Include="VulkanPlatform\VulkanSupport.cs" />

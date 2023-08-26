@@ -49,7 +49,7 @@ namespace VulkanPlatform {
             createInfo.imageArrayLayers = 1;
             createInfo.imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
-            renderer.FamilyIndices = VulkanPhysicalDevice.FindQueueFamilies(renderer.VSupport.PhysicalDevice, surface);
+            renderer.FamilyIndices = renderer.VSupport.PhysicalDevice.FindGraphicsQueueFamilies(surface);
             uint* queueFamilyIndices = stackalloc uint[] {(uint) renderer.FamilyIndices.graphicsFamily,(uint) renderer.FamilyIndices.presentFamily };
 
             if (renderer.FamilyIndices.graphicsFamily != renderer.FamilyIndices.presentFamily)
@@ -116,7 +116,7 @@ namespace VulkanPlatform {
             createInfo.imageArrayLayers = 1;
             createInfo.imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
-            QueueFamilyIndices indices = VulkanPhysicalDevice.FindQueueFamilies(renderer.VSupport.PhysicalDevice, surface);
+            QueueFamilyIndices indices = renderer.VSupport.PhysicalDevice.FindGraphicsQueueFamilies(surface);
             uint* queueFamilyIndices = stackalloc uint[] { (uint) indices.graphicsFamily, (uint) indices.presentFamily };
 
             if (indices.graphicsFamily != indices.presentFamily)

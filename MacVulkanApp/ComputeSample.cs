@@ -30,7 +30,7 @@ namespace MacVulkanApp
 
    
 
-        public void SetupPipeline()
+        public void SetupComputePipeline()
         {
             GetComputeQueue();
             // compute

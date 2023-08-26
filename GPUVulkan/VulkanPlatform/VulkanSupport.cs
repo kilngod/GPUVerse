@@ -70,6 +70,7 @@ namespace VulkanPlatform
             _physicalDevice = physicalDevice;
         }
 
+
         public VulkanSupport(DeliveryPlatform platform)
         {
             _platform = platform;
@@ -123,10 +124,7 @@ namespace VulkanPlatform
             VulkanNative.vkDestroyInstance(Instance, null);
         }
 
-        public void InitializeComputeQueue()
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 
 }
