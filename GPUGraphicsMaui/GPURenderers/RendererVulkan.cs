@@ -84,11 +84,11 @@ namespace GPUGraphicsMaui.GPURenderers
     
         private VkSurfaceKHR _surface = default(VkSurfaceKHR);
 
-        public VkSurfaceKHR VkSurface { get { return _surface; } }
+        public VkSurfaceKHR Surface { get { return _surface; } }
 
 
         private VkSwapchainKHR  _swapchain;
-        public VkSwapchainKHR Swapchain { get { return _swapchain; } }
+        public VkSwapchainKHR SwapChain { get { return _swapchain; } }
 
         private VkImage[] _swapChainImages;
         public VkImageView[] _swapChainImageViews;
@@ -114,7 +114,7 @@ namespace GPUGraphicsMaui.GPURenderers
         public VkPipelineLayout PipelineLayout { get; set; }
         public VkPipeline GraphicsPipeline { get; set; }
 
-        public VkFramebuffer[] Framebuffers { get; set; }
+        public VkFramebuffer[] FrameBuffers { get; set; }
 
         public VkCommandPool CommandPool { get; set; }
 
@@ -280,7 +280,7 @@ namespace GPUGraphicsMaui.GPURenderers
 
             VulkanNative.vkDestroyCommandPool(VSupport.Device, CommandPool, null);
 
-            foreach (var framebuffer in Framebuffers)
+            foreach (var framebuffer in FrameBuffers)
             {
                 VulkanNative.vkDestroyFramebuffer(VSupport.Device, framebuffer, null);
             }

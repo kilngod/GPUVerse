@@ -9,7 +9,7 @@ namespace VulkanPlatform
         {
             // Acquiring and image from the swap chain
             uint imageIndex;
-            VulkanHelpers.CheckErrors(VulkanNative.vkAcquireNextImageKHR(renderer.VSupport.Device, renderer.Swapchain, ulong.MaxValue, renderer.ImageAvailableSemaphore, 0, &imageIndex));
+            VulkanHelpers.CheckErrors(VulkanNative.vkAcquireNextImageKHR(renderer.VSupport.Device, renderer.SwapChain, ulong.MaxValue, renderer.ImageAvailableSemaphore, 0, &imageIndex));
 
             // Submitting the command buffer
             VkSemaphore* waitSemaphores = stackalloc VkSemaphore[] { renderer.ImageAvailableSemaphore };
@@ -32,7 +32,7 @@ namespace VulkanPlatform
             VulkanHelpers.CheckErrors(VulkanNative.vkQueueSubmit(renderer.GraphicsQueue, 1, &submitInfo, 0));
 
             // Presentation
-            VkSwapchainKHR* swapChains = stackalloc VkSwapchainKHR[] { renderer.Swapchain };
+            VkSwapchainKHR* swapChains = stackalloc VkSwapchainKHR[] { renderer.SwapChain };
 
             VkPresentInfoKHR presentInfo = new VkPresentInfoKHR()
             {

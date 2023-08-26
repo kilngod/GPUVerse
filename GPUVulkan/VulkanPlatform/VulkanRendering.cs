@@ -78,7 +78,7 @@ namespace VulkanPlatform
 #if DEBUG
             VulkanFlowTracer.AddItem("VulkanRendering.CreateFramebuffers");
 #endif
-            renderer.Framebuffers = new VkFramebuffer[renderer.SwapChainImageViews.Length];
+            renderer.FrameBuffers = new VkFramebuffer[renderer.SwapChainImageViews.Length];
 
             for (int i = 0; i < renderer.SwapChainImageViews.Length; i++)
             {
@@ -97,7 +97,7 @@ namespace VulkanPlatform
                 framebufferInfo.height = renderer.SurfaceExtent2D.height;
                 framebufferInfo.layers = 1;
 
-                fixed (VkFramebuffer* swapChainFramebufferPtr = &renderer.Framebuffers[i])
+                fixed (VkFramebuffer* swapChainFramebufferPtr = &renderer.FrameBuffers[i])
                 {
                     VulkanHelpers.CheckErrors(VulkanNative.vkCreateFramebuffer(renderer.VSupport.Device, &framebufferInfo, null, swapChainFramebufferPtr));
                 }
@@ -115,7 +115,7 @@ namespace VulkanPlatform
             VkCommandPoolCreateInfo poolInfo = new VkCommandPoolCreateInfo()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamilyIndex = (uint) renderer.FamilyIndices.graphicsFamily,
+                queueFamliyIndex = (uint) renderer.FamilyIndices.graphicsFamily,
                 flags = 0, // Optional,
             };
 
@@ -134,7 +134,7 @@ namespace VulkanPlatform
 #if DEBUG
             VulkanFlowTracer.AddItem("VulkanRendering.CreateCommandBuffers");
 #endif
-            renderer.CommandBuffers = new VkCommandBuffer[renderer.Framebuffers.Length];
+            renderer.CommandBuffers = new VkCommandBuffer[renderer.FrameBuffers.Length];
 
             VkCommandBufferAllocateInfo allocInfo = new VkCommandBufferAllocateInfo()
             {
@@ -171,7 +171,7 @@ namespace VulkanPlatform
                 {
                     sType = VkStructureType.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
                     renderPass = renderer.RenderPass,
-                    framebuffer = renderer.Framebuffers[i],
+                    framebuffer = renderer.FrameBuffers[i],
                     renderArea = new VkRect2D(0, 0, renderer.SurfaceExtent2D.width, renderer.SurfaceExtent2D.height),
                     clearValueCount = 1,
                     pClearValues = &clearColor,

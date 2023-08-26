@@ -16,6 +16,7 @@ namespace WinVulkanApp
 
 
         int _computeFamilyIndex = -1;
+        public int ComputeCommandBuffers { get; set; } = 1;
         public int ComputeFamilyIndex { get { return _computeFamilyIndex; } }
 
         private VkQueue _computeQueue;
@@ -26,6 +27,8 @@ namespace WinVulkanApp
         public VkCommandPool CommandPool { get; set; }
         public VkCommandBuffer[] CommandBuffers { get; set; }
         public VkPipelineLayout PipelineLayout { get; set; }
+
+        public VkPipeline Pipeline { get; set; }
         public VkDescriptorSet ComputeDescriptor { get; set; }
         public VkDescriptorSetLayout ComputeLayout { get; set; }
         public VkSemaphore ComputeSemaphore { get; set; }
@@ -43,7 +46,27 @@ namespace WinVulkanApp
         const int kHeight = 2400;
         // const int kWorkgroupSize = 32;
         ulong buffer_size;
-    
+
+        public static byte[] LoadRawResource(string ResourceFilePath)
+        {
+            byte[] byteResult;
+
+            using (FileStream rawStream = new FileStream(ResourceFilePath, FileMode.Open))
+            {
+
+                // MemoryStream appearently corrects corruption issue with using Seek on MacCatalyst or Android
+                MemoryStream stream = new MemoryStream();
+                rawStream.CopyTo(stream);
+                byteResult = stream.ToArray();
+
+
+
+                rawStream.Close();
+            }
+
+            return byteResult;
+
+        }
 
         public void SetupComputePipeline()
         {
@@ -55,12 +78,17 @@ namespace WinVulkanApp
          
 
             CreateDescriptors();
+            List<VulkanSpirV> computeShaderList = new List<VulkanSpirV>();
+            string resourceFolder = AppContext.BaseDirectory + "\\Shaders\\";
+            VulkanSpirV computeV = new VulkanSpirV() { EntryName = "main", Name = "Compute", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT, SpirVByte = LoadRawResource(resourceFolder + "comp.spv") };
+            computeShaderList.Add(computeV);
 
-            CreatePipeline();
+            CreatePipeline(computeShaderList);
+
+            Compute();
             /*
    
-          CreateShaderModule("shaders/comp.spv");
-          CreateComputePipeline();
+         
           CreateCommandPool();
           CreateCommandBuffers();
           FillCommandBuffer();
@@ -69,6 +97,17 @@ namespace WinVulkanApp
           */
 
         }
+
+        private void Compute()
+        {
+            CreateCommandPool();
+            CreateCommandBuffers();
+            FillCommandBuffer();
+            SubmitAndWait();
+            SaveRenderedImage("mandelbrot.png");
+        }
+
+        
 
         private void GetComputeQueue()
         {

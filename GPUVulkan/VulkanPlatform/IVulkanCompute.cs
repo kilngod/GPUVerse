@@ -9,6 +9,8 @@ namespace VulkanPlatform
         IVulkanSupport Support { get; }
 
         VkCommandPool CommandPool { get; set; }
+
+        int ComputeCommandBuffers { get; set; }
         VkCommandBuffer[] CommandBuffers { get; set; }
         VkPipelineLayout PipelineLayout { get; set; }
         VkPipeline ComputePipeline { get; set; }

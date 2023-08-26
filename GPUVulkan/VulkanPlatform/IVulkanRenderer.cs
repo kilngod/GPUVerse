@@ -8,8 +8,8 @@ namespace VulkanPlatform
         bool PipelineInitialized { get; set; }
 
         IVulkanSupport VSupport { get; }
-        VkSurfaceKHR VkSurface { get; }
-        VkSwapchainKHR Swapchain { get; }
+        VkSurfaceKHR Surface { get; }
+        VkSwapchainKHR SwapChain { get; }
         VkImage[] SwapChainImages { get; }
         VkImageView[] SwapChainImageViews { get; }
         SwapChainSupportDetails SwapChainDetails { get; set; }
@@ -20,7 +20,7 @@ namespace VulkanPlatform
         VkRenderPass RenderPass { get; set; }
         VkPipelineLayout PipelineLayout { get; set; }
         VkPipeline GraphicsPipeline { get; set; }
-        VkFramebuffer[] Framebuffers { get; set; }
+        VkFramebuffer[] FrameBuffers { get; set; }
         VkCommandPool CommandPool { get; set; }
         VkCommandBuffer[] CommandBuffers { get; set; }
         QueueFamilyIndices FamilyIndices { get; set; }
