@@ -83,28 +83,15 @@ namespace VulkanPlatform
 
                 VulkanHelpers.CheckErrors(VulkanNative.vkBeginCommandBuffer(compute.CommandBuffers[i], &beginInfo));
 
-                // Pass
-                VkClearValue clearColor = new VkClearValue()
-                {
-                    color = new VkClearColorValue(0.0f, 0.0f, 0.0f, 1.0f),
-                };
 
-                VkRenderPassBeginInfo renderPassInfo = new VkRenderPassBeginInfo()
-                {
-                    sType = VkStructureType.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-                    renderPass = compute.RenderPass,
-                    framebuffer = compute.FrameBuffers[i],
-                    renderArea = new VkRect2D(0, 0, compute.SurfaceExtent2D.width, compute.SurfaceExtent2D.height),
-                    clearValueCount = 1,
-                    pClearValues = &clearColor,
-                };
+                VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.ComputePipeline);
 
-                VulkanNative.vkCmdBeginRenderPass(compute.CommandBuffers[i], &renderPassInfo, VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE);
 
-                // Draw
-                VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.Pipeline);
 
-              
+                VulkanHelpers.CheckErrors(VulkanNative.vkCmdBindDescriptorSets(compute.CommandBuffers[0], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
+                    compute.PipelineLayout, 0, 1, compute.ComputeDescriptor, 0, null);
+
+
 
                 VulkanHelpers.CheckErrors(VulkanNative.vkEndCommandBuffer(compute.CommandBuffers[i]));
             }
@@ -115,9 +102,28 @@ namespace VulkanPlatform
 
         }
 
-        public static void SubmitAndWait(this IVulkanCompute compute)
+        public unsafe static void SubmitAndWait(this IVulkanCompute compute)
         {
+            fixed (VkCommandBuffer* commandBuffersPtr = &compute.CommandBuffers[0])
+            {
+                VkSubmitInfo submitInfo = new VkSubmitInfo()
+                {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
+                    commandBufferCount = (uint) compute.ComputeCommandBuffers,
+                    pCommandBuffers = commandBuffersPtr
+                };
+            }
 
+            VkFenceCreateInfo fenceCreateInfo = new VkFenceCreateInfo()
+            {
+                sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                flags = VkFenceCreateFlags.VK_FENCE_CREATE_SIGNALED_BIT
+            };
+
+            VkFence fence = default(VkFence);
+            VulkanNative.vkCreateFence(compute.Support.Device,&fenceCreateInfo,null,&fence);
+
+            
         }
     }
 }
