@@ -29,7 +29,7 @@ namespace WinVulkanApp
         public VkPipelineLayout PipelineLayout { get; set; }
 
         public VkPipeline Pipeline { get; set; }
-        public VkDescriptorSet ComputeDescriptor { get; set; }
+        public VkDescriptorSet[] ComputeDescriptors { get; set; }
         public VkDescriptorSetLayout ComputeLayout { get; set; }
         public VkSemaphore ComputeSemaphore { get; set; }
 
