@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using GPUVulkan;
@@ -17,7 +15,7 @@ namespace VulkanPlatform
 
         public static unsafe void CreateComputePipeline(this VkDevice device, ref VkComputePipelineCreateInfo pipelineCreateInfo, ref VkPipeline pipeline, ref VkAllocationCallbacks allocationCallbacks, VkPipelineCache cache = default(VkPipelineCache))
         {
-            fixed (VkPipeline* pipelinePtr = &pipeline) 
+            fixed (VkPipeline* pipelinePtr = &pipeline)
             {
                 fixed (VkComputePipelineCreateInfo* pipelineCreateInfoPtr = &pipelineCreateInfo)
                 {
@@ -27,7 +25,7 @@ namespace VulkanPlatform
                     }
                 }
             }
-     
+
         }
 
 
@@ -76,7 +74,7 @@ namespace VulkanPlatform
         }
 
         // clearly multiple definitions are needed based on the type of compute.
-        public unsafe static void FillCommandBuffer(this IVulkanCompute compute, uint groupCountX, uint groupCountY, uint groupCountZ )
+        public unsafe static void FillCommandBuffer(this IVulkanCompute compute, uint groupCountX, uint groupCountY, uint groupCountZ)
         {
 
             // Begin
@@ -111,26 +109,26 @@ namespace VulkanPlatform
 
         public unsafe static void SubmitAndWait(this IVulkanCompute compute, VkSubmitInfo[] submitInfos)
         {
-           
 
-                
 
-                VkFenceCreateInfo fenceCreateInfo = new VkFenceCreateInfo()
-                {
-                    sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
-                    flags = VkFenceCreateFlags.None
-                };
 
-                VkFence fence = default(VkFence);
-                VulkanNative.vkCreateFence(compute.Support.Device, &fenceCreateInfo, null, &fence);
 
-                fixed (VkSubmitInfo* submitInfoPtr = &submitInfos[0])
-                {
-                    VulkanNative.vkQueueSubmit(compute.ComputeQueue,(uint) submitInfos.Length, submitInfoPtr, fence);
-                }
-              
-                VulkanNative.vkWaitForFences(compute.Support.Device, 1, &fence, true, 100000000);
+            VkFenceCreateInfo fenceCreateInfo = new VkFenceCreateInfo()
+            {
+                sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                flags = VkFenceCreateFlags.None
+            };
+
+            VkFence fence = default(VkFence);
+            VulkanNative.vkCreateFence(compute.Support.Device, &fenceCreateInfo, null, &fence);
+
+            fixed (VkSubmitInfo* submitInfoPtr = &submitInfos[0])
+            {
+                VulkanNative.vkQueueSubmit(compute.ComputeQueue, (uint)submitInfos.Length, submitInfoPtr, fence);
             }
+
+            VulkanNative.vkWaitForFences(compute.Support.Device, 1, &fence, true, 100000000);
         }
     }
+}
 }
