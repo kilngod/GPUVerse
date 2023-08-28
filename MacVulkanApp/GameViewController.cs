@@ -118,7 +118,14 @@ namespace MacVulkanApp
 
         }
 
+        protected void DoCompute()
+        {
+            ComputeSample computeSample = new ComputeSample(VSupport);
 
+            computeSample.SetupComputePipeline();
+            computeSample.Compute();
+
+        }
 
         public override void ViewDidLoad()
         {
@@ -127,6 +134,8 @@ namespace MacVulkanApp
 
             VSupport = new VulkanSupport(DeliveryPlatform.MacOS);
 
+
+            DoCompute();
 
             SetupView();
 

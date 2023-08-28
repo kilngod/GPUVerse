@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GPUVulkan;
 using VulkanPlatform;
 
-namespace WinVulkanApp
+namespace MacVulkanApp
 {
 	public class ComputeSample:IVulkanCompute
 	{
@@ -71,7 +71,7 @@ namespace WinVulkanApp
 
         }
 
-        private unsafe void Compute()
+        public unsafe void Compute()
         {
             this.CreateCommandPool();
             this.CreateCommandBuffers();

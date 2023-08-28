@@ -32,9 +32,22 @@ namespace WinVulkanApp
             return window;
         }
 
+        protected void DoCompute()
+        {
+            ComputeSample computeSample = new ComputeSample(VSupport);
+
+            computeSample.SetupComputePipeline();
+            computeSample.Compute();
+
+        }
+
         public void InitVulkan()
         {
             support = new VulkanSupport(DeliveryPlatform.Windows);
+
+
+            DoCompute();
+
 
             renderer = new WinVulkanRenderer(window);
             (renderer as WinVulkanRenderer).VSupport = support;
