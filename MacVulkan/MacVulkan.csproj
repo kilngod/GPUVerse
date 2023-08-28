@@ -80,6 +80,7 @@
     <Compile Include="VulkanPlatform\VulkanQueues.cs" />
     <Compile Include="VulkanPlatform\VulkanDescriptor.cs" />
     <Compile Include="VulkanPlatform\VulkanComputing.cs" />
+    <Compile Include="VulkanPlatform\VulkanMemory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="libMoltenVK.dylib">

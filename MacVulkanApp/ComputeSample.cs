@@ -91,7 +91,12 @@ namespace WinVulkanApp
             SaveRenderedImage("mandelbrot.png");
         }
 
-        
+        public void SaveRenderedImage(string ImagePathAndName)
+        {
+
+        }
+
+
 
         private void GetComputeQueue()
         {
