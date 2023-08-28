@@ -13,8 +13,12 @@ namespace WinVulkanApp
 		{
             _support = support;
 		}
-        bool _localMemory = false;
-        public bool UnifiedMemory { get { return _localMemory; } }
+
+
+        bool _unifiedMemory = false;
+
+        public bool UnifiedMemory { get; }
+
         int _computeFamilyIndex = -1;
         public int ComputeCommandBuffers { get; set; } = 1;
         public int ComputeFamilyIndex { get { return _computeFamilyIndex; } }
@@ -42,9 +46,9 @@ namespace WinVulkanApp
 
         // mandlebrot information
         
-        const int kWidth = 3200;
-        const int kHeight = 2400;
-        // const int kWorkgroupSize = 32;
+        const uint kWidth = 3200;
+        const uint kHeight = 2400;
+        uint kWorkgroupSize = 32;
         ulong buffer_size;
 
         public static byte[] LoadRawResource(string ResourceFilePath)
@@ -101,6 +105,12 @@ namespace WinVulkanApp
         {
             this.CreateCommandPool();
             this.CreateCommandBuffers();
+
+            if (kWorkgroupSize > Support.DeviceProperties.limits.maxComputeWorkGroupSize_0)
+            {
+                kWorkgroupSize = Support.DeviceProperties.limits.maxComputeWorkGroupSize_0;
+            }
+
             this.FillCommandBuffer(kWidth / kWorkgroupSize, kHeight / kWorkgroupSize, 1);
 
             fixed (VkCommandBuffer* commandBuffersPtr = &CommandBuffers[0])
@@ -135,7 +145,7 @@ namespace WinVulkanApp
             
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
-            Support.AllocateMemory(ref _buffer, ref _deviceMemory);
+            Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _unifiedMemory);
 
             // bind memory
             Support.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);

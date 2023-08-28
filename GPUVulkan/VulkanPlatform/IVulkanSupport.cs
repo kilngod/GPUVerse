@@ -33,6 +33,7 @@ namespace VulkanPlatform
 
         void SetPhysicalDevice(VkPhysicalDevice physicalDevice);
 
+        VkPhysicalDeviceProperties DeviceProperties { get; }
         void CleanupVulkanSupport();
 
         

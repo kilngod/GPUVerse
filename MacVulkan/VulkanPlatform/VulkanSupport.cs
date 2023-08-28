@@ -69,6 +69,30 @@ namespace VulkanPlatform
             _physicalDevice = physicalDevice;
         }
 
+        bool propertiesRetrieved = false;
+        VkPhysicalDeviceProperties _deviceProperties = default(VkPhysicalDeviceProperties);
+        public VkPhysicalDeviceProperties DeviceProperties
+        {
+            get
+            {
+                if (propertiesRetrieved)
+                {
+                    GetPhysicalDeviceProperties();
+                }
+
+                return _deviceProperties;
+            }
+        }
+
+        public unsafe void GetPhysicalDeviceProperties()
+        {
+            fixed (VkPhysicalDeviceProperties* devicePropertiesPtr = &_deviceProperties)
+            {
+                VulkanNative.vkGetPhysicalDeviceProperties(PhysicalDevice, devicePropertiesPtr);
+            }
+            propertiesRetrieved = _deviceProperties.limits.maxComputeWorkGroupCount_0 > 0;
+        }
+
 
         public VulkanSupport(DeliveryPlatform platform)
         {

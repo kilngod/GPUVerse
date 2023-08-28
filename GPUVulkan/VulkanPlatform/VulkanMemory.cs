@@ -7,79 +7,30 @@ namespace VulkanPlatform
 	{
 
 
-		public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags memoryFlags)
+		public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags requestedMemoryFlags, ref bool localMemory)
 		{
 
             VkMemoryPropertyFlags memoryPropertyFlags = memoryProperties.GetMemoryType(0).propertyFlags;
-         
-            if (((memory_type_bits & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
+
+            if ((memoryPropertyFlags & requestedMemoryFlags) == requestedMemoryFlags)
             {
+                localMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0;
                 return 0;
             }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(1).propertyFlags;
-            if (((memory_type_bits << 1 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
+            for (int i = 1; i < 32; i++)
             {
-                return 1;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(2).propertyFlags;
-            if (((memory_type_bits << 2 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 2;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(3).propertyFlags;
-            if (((memory_type_bits << 3 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 3;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(4).propertyFlags;
-            if (((memory_type_bits << 4 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 4;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(5).propertyFlags;
-            if (((memory_type_bits << 5 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 5;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(6).propertyFlags;
-            if (((memory_type_bits << 6 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 6;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(7).propertyFlags;
-            if (((memory_type_bits << 7 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 7;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(8).propertyFlags;
-            if (((memory_type_bits << 8 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 8;
-            }
-
-            memoryPropertyFlags = memoryProperties.GetMemoryType(9).propertyFlags;
-            if (((memory_type_bits << 9 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 9;
-            }
-            memoryPropertyFlags = memoryProperties.GetMemoryType(10).propertyFlags;
-            if (((memory_type_bits << 10 & 1) == 1) & (memoryPropertyFlags & memoryFlags) == memoryFlags)
-            {
-                return 10;
+                memoryPropertyFlags = memoryProperties.GetMemoryType(1).propertyFlags;
+                if (((memory_type_bits << (i - 1) & 1) == 1) & (memoryPropertyFlags & requestedMemoryFlags) == requestedMemoryFlags)
+                {
+                    localMemory = (memoryPropertyFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0;
+                    return (uint)i;
+                }
             }
             return uint.MaxValue;
 
         }
 
-		public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory)
+		public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory, ref bool unifiedMemory)
 		{
 			VkMemoryRequirements memoryRequirements = default(VkMemoryRequirements);
 			VkPhysicalDeviceMemoryProperties memoryProperties = default(VkPhysicalDeviceMemoryProperties);
@@ -91,7 +42,7 @@ namespace VulkanPlatform
 			VkMemoryAllocateInfo allocateInfo = new VkMemoryAllocateInfo()
 			{
 				sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-				memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT| VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT),
+				memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT| VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, ref unifiedMemory),
 				allocationSize = memoryRequirements.size
 			};
 

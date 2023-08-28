@@ -1,6 +1,7 @@
 ﻿using System;
 using GPUVulkan;
 
+
 namespace VulkanPlatform
 {
 	public interface IVulkanSupport
@@ -32,6 +33,8 @@ namespace VulkanPlatform
         VkPhysicalDevice PhysicalDevice { get; }
 
         void SetPhysicalDevice(VkPhysicalDevice physicalDevice);
+
+        VkPhysicalDeviceProperties DeviceProperties { get; }
 
         void CleanupVulkanSupport();
 

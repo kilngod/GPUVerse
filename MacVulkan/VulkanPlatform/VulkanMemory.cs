@@ -30,7 +30,7 @@ namespace VulkanPlatform
             
         }
 
-		public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory, ref bool localMemory)
+		public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory, ref bool unifiedMemory)
 		{
 			VkMemoryRequirements memoryRequirements = default(VkMemoryRequirements);
 			VkPhysicalDeviceMemoryProperties memoryProperties = default(VkPhysicalDeviceMemoryProperties);
@@ -42,7 +42,7 @@ namespace VulkanPlatform
 			VkMemoryAllocateInfo allocateInfo = new VkMemoryAllocateInfo()
 			{
 				sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-				memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT| VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, ref localMemory),
+				memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT| VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, ref unifiedMemory),
 				allocationSize = memoryRequirements.size
 			};
 

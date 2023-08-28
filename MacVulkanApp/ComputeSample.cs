@@ -16,7 +16,8 @@ namespace MacVulkanApp
 
         bool _unifiedMemory = false;
 
-        public bool UnifiedMemory { get { return _unifiedMemory; } }
+        public bool UnifiedMemory { get; }
+
         int _computeFamilyIndex = -1;
         public int ComputeCommandBuffers { get; set; } = 1;
         public int ComputeFamilyIndex { get { return _computeFamilyIndex; } }
@@ -44,9 +45,9 @@ namespace MacVulkanApp
 
         // mandlebrot information
         
-        const int kWidth = 3200;
-        const int kHeight = 2400;
-        const int kWorkgroupSize = 32;
+        const uint kWidth = 3200;
+        const uint kHeight = 2400;
+        uint kWorkgroupSize = 32;
         ulong buffer_size;
 
         public void SaveRenderedImage(string fileNamePath)
@@ -78,6 +79,11 @@ namespace MacVulkanApp
             this.CreateCommandPool();
             this.CreateCommandBuffers();
             
+            if (kWorkgroupSize > Support.DeviceProperties.limits.maxComputeWorkGroupSize_0)
+            {
+                kWorkgroupSize = Support.DeviceProperties.limits.maxComputeWorkGroupSize_0;
+            }
+
             this.FillCommandBuffer( kWidth / kWorkgroupSize, kHeight / kWorkgroupSize, 1);
 
             fixed (VkCommandBuffer* commandBuffersPtr = &CommandBuffers[0])
@@ -93,8 +99,7 @@ namespace MacVulkanApp
             SaveRenderedImage("mandelbrot.png");
         }
 
-      
-
+        
 
         private void GetComputeQueue()
         {
@@ -113,6 +118,7 @@ namespace MacVulkanApp
             
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
+
             Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _unifiedMemory);
 
             // bind memory
