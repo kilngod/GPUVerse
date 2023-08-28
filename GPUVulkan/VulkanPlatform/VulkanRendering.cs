@@ -1,6 +1,6 @@
 ﻿using GPUVulkan;
 
-#nullable disable
+
 
 namespace VulkanPlatform
 {
@@ -115,7 +115,7 @@ namespace VulkanPlatform
             VkCommandPoolCreateInfo poolInfo = new VkCommandPoolCreateInfo()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamliyIndex = (uint) renderer.FamilyIndices.graphicsFamily,
+                queueFamilyIndex = (uint) renderer.FamilyIndices.graphicsFamily,
                 flags = 0, // Optional,
             };
 

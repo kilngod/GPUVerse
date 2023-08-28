@@ -67,6 +67,7 @@
     <Compile Include="VulkanPlatform\VulkanFlowTracer.cs" />
     <Compile Include="VulkanPlatform\VulkanHelpers.cs" />
     <Compile Include="VulkanPlatform\VulkanInstance.cs" />
+    <Compile Include="VulkanPlatform\VulkanMemory.cs" />
     <Compile Include="VulkanPlatform\VulkanPhysicalDevice.cs" />
     <Compile Include="VulkanPlatform\VulkanPipeline.cs" />
     <Compile Include="VulkanPlatform\VulkanRendering.cs" />

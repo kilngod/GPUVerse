@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GPUVulkan;
-using Microsoft.VisualBasic;
+
 
 namespace VulkanPlatform
 {
-#nullable disable
+
     public static class VulkanComputing
     {
 
@@ -37,7 +37,7 @@ namespace VulkanPlatform
             VkCommandPoolCreateInfo poolInfo = new VkCommandPoolCreateInfo()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-                queueFamliyIndex = (uint)compute.ComputeFamilyIndex,
+                queueFamilyIndex = (uint)compute.ComputeFamilyIndex,
                 flags = 0, // Optional,
             };
 
@@ -71,33 +71,62 @@ namespace VulkanPlatform
                 VulkanHelpers.CheckErrors(VulkanNative.vkAllocateCommandBuffers(compute.Support.Device, &allocInfo, commandBuffersPtr));
             }
 
+        }
+    
+
+
+        // clearly multiple definitions are needed based on the type of compute.
+        public unsafe static void FillCommandBuffer(this IVulkanCompute compute, uint groupCountX, uint groupCountY, uint groupCountZ)
+        {
+
             // Begin
             for (uint i = 0; i < compute.CommandBuffers.Length; i++)
             {
                 VkCommandBufferBeginInfo beginInfo = new VkCommandBufferBeginInfo()
                 {
                     sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-                    flags =  VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, // Optional
+                    flags = VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, // Optional
                     pInheritanceInfo = null, // Optional
                 };
 
                 VulkanHelpers.CheckErrors(VulkanNative.vkBeginCommandBuffer(compute.CommandBuffers[i], &beginInfo));
 
-                // Pass
-                VkClearValue clearColor = new VkClearValue()
-                {
-                    color = new VkClearColorValue(0.0f, 0.0f, 0.0f, 1.0f),
-                };
 
-               
-
-                // Draw
                 VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.ComputePipeline);
 
-              
+                for (int j = 0; j < compute.ComputeDescriptors.Length; j++)
+                {
+                    fixed (VkDescriptorSet* descriptorSetPtr = &compute.ComputeDescriptors[j])
+                    {
+                        VulkanNative.vkCmdBindDescriptorSets(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
+                            compute.PipelineLayout, 0, (uint)compute.ComputeDescriptors.Length, descriptorSetPtr, 0, null);
+                    }
+                }
+
+                VulkanNative.vkCmdDispatch(compute.CommandBuffers[i], groupCountX, groupCountY, groupCountZ);
 
                 VulkanHelpers.CheckErrors(VulkanNative.vkEndCommandBuffer(compute.CommandBuffers[i]));
             }
         }
+
+        public unsafe static void SubmitAndWait(this IVulkanCompute compute, VkSubmitInfo[] submitInfos)
+        {
+            VkFenceCreateInfo fenceCreateInfo = new VkFenceCreateInfo()
+            {
+                sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                flags = VkFenceCreateFlags.None
+            };
+
+            VkFence fence = default(VkFence);
+            VulkanNative.vkCreateFence(compute.Support.Device, &fenceCreateInfo, null, &fence);
+
+            fixed (VkSubmitInfo* submitInfoPtr = &submitInfos[0])
+            {
+                VulkanNative.vkQueueSubmit(compute.ComputeQueue, (uint)submitInfos.Length, submitInfoPtr, fence);
+            }
+
+            VulkanNative.vkWaitForFences(compute.Support.Device, 1, &fence, true, 100000000);
+        }
     }
+}
 }

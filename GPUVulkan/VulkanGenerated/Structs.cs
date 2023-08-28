@@ -1008,7 +1008,7 @@ namespace GPUVulkan
 		public VkStructureType sType;
 		public void* pNext;
 		public VkCommandPoolCreateFlags flags;
-		public uint queueFamliyIndex;
+		public uint queueFamilyIndex;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

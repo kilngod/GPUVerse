@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using GPUVulkan;
@@ -71,13 +73,19 @@ namespace VulkanPlatform
                 VulkanHelpers.CheckErrors(VulkanNative.vkAllocateCommandBuffers(compute.Support.Device, &allocInfo, commandBuffersPtr));
             }
 
+        }
+
+        // clearly multiple definitions are needed based on the type of compute.
+        public unsafe static void FillCommandBuffer(this IVulkanCompute compute, uint groupCountX, uint groupCountY, uint groupCountZ )
+        {
+
             // Begin
             for (uint i = 0; i < compute.CommandBuffers.Length; i++)
             {
                 VkCommandBufferBeginInfo beginInfo = new VkCommandBufferBeginInfo()
                 {
                     sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-                    flags =  VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, // Optional
+                    flags = VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, // Optional
                     pInheritanceInfo = null, // Optional
                 };
 
@@ -86,44 +94,43 @@ namespace VulkanPlatform
 
                 VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.ComputePipeline);
 
+                for (int j = 0; j < compute.ComputeDescriptors.Length; j++)
+                {
+                    fixed (VkDescriptorSet* descriptorSetPtr = &compute.ComputeDescriptors[j])
+                    {
+                        VulkanNative.vkCmdBindDescriptorSets(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
+                            compute.PipelineLayout, 0, (uint)compute.ComputeDescriptors.Length, descriptorSetPtr, 0, null);
+                    }
+                }
 
-
-                VulkanHelpers.CheckErrors(VulkanNative.vkCmdBindDescriptorSets(compute.CommandBuffers[0], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
-                    compute.PipelineLayout, 0, 1, compute.ComputeDescriptor, 0, null);
-
-
+                VulkanNative.vkCmdDispatch(compute.CommandBuffers[i], groupCountX, groupCountY, groupCountZ);
 
                 VulkanHelpers.CheckErrors(VulkanNative.vkEndCommandBuffer(compute.CommandBuffers[i]));
             }
         }
 
-        public static void FillCommandBuffer(this IVulkanCompute compute)
+        public unsafe static void SubmitAndWait(this IVulkanCompute compute, VkSubmitInfo[] submitInfos)
         {
+           
 
-        }
+                
 
-        public unsafe static void SubmitAndWait(this IVulkanCompute compute)
-        {
-            fixed (VkCommandBuffer* commandBuffersPtr = &compute.CommandBuffers[0])
-            {
-                VkSubmitInfo submitInfo = new VkSubmitInfo()
+                VkFenceCreateInfo fenceCreateInfo = new VkFenceCreateInfo()
                 {
-                    sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
-                    commandBufferCount = (uint) compute.ComputeCommandBuffers,
-                    pCommandBuffers = commandBuffersPtr
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                    flags = VkFenceCreateFlags.None
                 };
+
+                VkFence fence = default(VkFence);
+                VulkanNative.vkCreateFence(compute.Support.Device, &fenceCreateInfo, null, &fence);
+
+                fixed (VkSubmitInfo* submitInfoPtr = &submitInfos[0])
+                {
+                    VulkanNative.vkQueueSubmit(compute.ComputeQueue,(uint) submitInfos.Length, submitInfoPtr, fence);
+                }
+              
+                VulkanNative.vkWaitForFences(compute.Support.Device, 1, &fence, true, 100000000);
             }
-
-            VkFenceCreateInfo fenceCreateInfo = new VkFenceCreateInfo()
-            {
-                sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
-                flags = VkFenceCreateFlags.VK_FENCE_CREATE_SIGNALED_BIT
-            };
-
-            VkFence fence = default(VkFence);
-            VulkanNative.vkCreateFence(compute.Support.Device,&fenceCreateInfo,null,&fence);
-
-            
         }
     }
 }

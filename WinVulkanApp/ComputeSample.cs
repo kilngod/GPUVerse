@@ -68,6 +68,13 @@ namespace WinVulkanApp
 
         }
 
+
+        public void SaveRenderedImage(string fileNamePath)
+        {
+
+        }
+
+
         public void SetupComputePipeline()
         {
             GetComputeQueue();
@@ -90,12 +97,22 @@ namespace WinVulkanApp
 
         }
 
-        private void Compute()
+        private unsafe void Compute()
         {
             this.CreateCommandPool();
             this.CreateCommandBuffers();
-            this.FillCommandBuffer();
-            this.SubmitAndWait();
+            this.FillCommandBuffer(kWidth / kWorkgroupSize, kHeight / kWorkgroupSize, 1);
+
+            fixed (VkCommandBuffer* commandBuffersPtr = &CommandBuffers[0])
+            {
+                VkSubmitInfo submitInfo = new VkSubmitInfo()
+                {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
+                    commandBufferCount = (uint)ComputeCommandBuffers,
+                    pCommandBuffers = commandBuffersPtr
+                };
+                this.SubmitAndWait(new VkSubmitInfo[] { submitInfo });
+            }
             SaveRenderedImage("mandelbrot.png");
         }
 

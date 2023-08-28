@@ -44,10 +44,13 @@ namespace WinVulkanApp
         
         const int kWidth = 3200;
         const int kHeight = 2400;
-        // const int kWorkgroupSize = 32;
+        const int kWorkgroupSize = 32;
         ulong buffer_size;
 
-       
+        public void SaveRenderedImage(string fileNamePath)
+        {
+
+        }
 
         public void SetupComputePipeline()
         {
@@ -66,24 +69,26 @@ namespace WinVulkanApp
 
             CreatePipeline(computeShaderList);
 
-           
-            /*
-   
-         
-           FillCommandBuffer();
-          SubmitAndWait();
-          SaveRenderedImage("mandelbrot.png");
-          */
-
         }
 
-        private void Compute()
+        private unsafe void Compute()
         {
             this.CreateCommandPool();
             this.CreateCommandBuffers();
-            this.FillCommandBuffer();
-            this.SubmitAndWait();
-            this.SaveRenderedImage("mandelbrot.png");
+            
+            this.FillCommandBuffer( kWidth / kWorkgroupSize, kHeight / kWorkgroupSize, 1);
+
+            fixed (VkCommandBuffer* commandBuffersPtr = &CommandBuffers[0])
+            {
+                VkSubmitInfo submitInfo = new VkSubmitInfo()
+                {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
+                    commandBufferCount = (uint)ComputeCommandBuffers,
+                    pCommandBuffers = commandBuffersPtr
+                };
+                this.SubmitAndWait(new VkSubmitInfo[] { submitInfo });
+            }
+            SaveRenderedImage("mandelbrot.png");
         }
 
         

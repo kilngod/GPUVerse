@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using GPUVulkan;
 
-#nullable disable
+
 
 namespace VulkanPlatform { 
 

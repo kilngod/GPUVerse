@@ -41,7 +41,7 @@ namespace VulkanPlatform
         public VulkanStringList DeviceExtensions { get { return _deviceExtensions; } }
 
 
-#nullable enable
+
 
         // Vulkan objects
 
