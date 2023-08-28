@@ -13,8 +13,8 @@ namespace WinVulkanApp
 		{
             _support = support;
 		}
-
-
+        bool _localMemory = false;
+        public bool UnifiedMemory { get { return _localMemory; } }
         int _computeFamilyIndex = -1;
         public int ComputeCommandBuffers { get; set; } = 1;
         public int ComputeFamilyIndex { get { return _computeFamilyIndex; } }

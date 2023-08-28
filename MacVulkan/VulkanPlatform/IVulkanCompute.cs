@@ -5,6 +5,7 @@ namespace VulkanPlatform
 {
     public interface IVulkanCompute
     {
+        bool UnifiedMemory { get; }
         int ComputeFamilyIndex { get; }
         IVulkanSupport Support { get; }
 

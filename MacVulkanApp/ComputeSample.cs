@@ -14,7 +14,9 @@ namespace MacVulkanApp
             _support = support;
 		}
 
+        bool _unifiedMemory = false;
 
+        public bool UnifiedMemory { get { return _unifiedMemory; } }
         int _computeFamilyIndex = -1;
         public int ComputeCommandBuffers { get; set; } = 1;
         public int ComputeFamilyIndex { get { return _computeFamilyIndex; } }
@@ -111,7 +113,7 @@ namespace MacVulkanApp
             
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
-            Support.AllocateMemory(ref _buffer, ref _deviceMemory);
+            Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _unifiedMemory);
 
             // bind memory
             Support.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);

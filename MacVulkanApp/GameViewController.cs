@@ -135,19 +135,30 @@ namespace MacVulkanApp
             VSupport = new VulkanSupport(DeliveryPlatform.MacOS);
 
 
-            DoCompute();
-
             SetupView();
 
             // update width and height and then update swapchain
             SurfaceExtent2D = new VkExtent2D(Width, Height);
 
+            SetupSurfaceAndDevice();
 
-
+            DoCompute(); // can't call this until the physical device is configured.
 
             SetupPipeline();
 
             Active = true;
+        }
+
+        public void SetupSurfaceAndDevice()
+        {
+#if DEBUG
+            VulkanFlowTracer.AddItem($"RendererVulkan.SetupSurfaceAndDevice");
+#endif
+
+
+            CreateSurface();
+
+            this.ConfigureDevices(_surface);
         }
 
         public void SetupPipeline()
@@ -156,9 +167,6 @@ namespace MacVulkanApp
             VulkanFlowTracer.AddItem($"RendererVulkan.SetupPipeline");
 #endif
 
-            CreateSurface();
-
-            this.ConfigureDevices(_surface);
 
             this.CreateSwapChain(_surface, ref _swapchain);
             this.CreateImageViews();
