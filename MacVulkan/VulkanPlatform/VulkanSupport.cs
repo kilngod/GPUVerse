@@ -75,7 +75,7 @@ namespace VulkanPlatform
         {
             get
             {
-                if (propertiesRetrieved)
+                if (!propertiesRetrieved)
                 {
                     GetPhysicalDeviceProperties();
                 }

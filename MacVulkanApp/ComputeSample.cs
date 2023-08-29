@@ -70,7 +70,8 @@ namespace MacVulkanApp
 
             CreateDescriptors();
             List<VulkanSpirV> computeShaderList = new List<VulkanSpirV>();
-            string resourceFolder = AppContext.BaseDirectory + "\\Shaders\\";
+            string targetFolder = "/Contents/";
+            string resourceFolder = AppContext.BaseDirectory.Substring(0,AppContext.BaseDirectory.IndexOf(targetFolder) + targetFolder.Length) + "Resources/";
             VulkanSpirV computeV = new VulkanSpirV() { EntryName = "main", Name = "Compute", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT, SpirVByte = MacIO.LoadRawResource(resourceFolder + "comp.spv") };
             computeShaderList.Add(computeV);
 
