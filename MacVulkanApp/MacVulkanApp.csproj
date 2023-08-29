@@ -70,7 +70,9 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <Metal Include="Shaders.metal" />
+    <Metal Include="Resources\Shaders.metal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Metal>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -99,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\frag.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\comp.spv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

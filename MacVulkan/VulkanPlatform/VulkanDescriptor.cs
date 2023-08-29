@@ -42,6 +42,16 @@ namespace VulkanPlatform
 
         }
 
+        public unsafe static void UpdateDescriptorSet(this IVulkanCompute compute, ref VkWriteDescriptorSet writeSet)        {
+            fixed (VkWriteDescriptorSet* writeSetPtr = &writeSet)
+            {
+                
+                    VulkanNative.vkUpdateDescriptorSets(compute.Support.Device, 1, writeSetPtr, 0, null);
+                
+            }
+
+        }
+
         public unsafe static void UpdateDescriptorSet(this IVulkanCompute compute, ref VkWriteDescriptorSet writeSet, ref VkCopyDescriptorSet copySet)
         {
             fixed (VkWriteDescriptorSet* writeSetPtr = &writeSet)
@@ -59,7 +69,7 @@ namespace VulkanPlatform
             fixed (VkWriteDescriptorSet* writeSetPtr = &writeSet[0])
             {
 
-                VulkanNative.vkUpdateDescriptorSets(compute.Support.Device, (uint)writeSet.Length, writeSetPtr, (uint)copySet.Length, copySetPtr);
+                VulkanNative.vkUpdateDescriptorSets(compute.Support.Device, (uint)writeSet.Length, writeSetPtr, 0, null);
 
             }
 
