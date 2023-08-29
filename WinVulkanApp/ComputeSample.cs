@@ -33,7 +33,11 @@ namespace WinVulkanApp
         public VkPipelineLayout PipelineLayout { get; set; }
 
         public VkPipeline Pipeline { get; set; }
-        public VkDescriptorSet[] ComputeDescriptors { get; set; }
+
+        public uint ComputeDescriptorSets { get; set; } = 1;
+
+        VkDescriptorSet[] _descriptorSets;
+        public VkDescriptorSet[] DescriptorSets { get { return _descriptorSets; } }
         public VkDescriptorSetLayout ComputeLayout { get; set; }
         public VkSemaphore ComputeSemaphore { get; set; }
 
@@ -58,7 +62,7 @@ namespace WinVulkanApp
             using (FileStream rawStream = new FileStream(ResourceFilePath, FileMode.Open))
             {
 
-                // MemoryStream appearently corrects corruption issue with using Seek on MacCatalyst or Android
+                // MemoryStream apparently corrects corruption issue with using Seek on MacCatalyst or Android
                 MemoryStream stream = new MemoryStream();
                 rawStream.CopyTo(stream);
                 byteResult = stream.ToArray();
@@ -101,9 +105,10 @@ namespace WinVulkanApp
 
         }
 
-        private unsafe void Compute()
+        public unsafe void Compute()
         {
             this.CreateCommandPool();
+
             this.CreateCommandBuffers();
 
             if (kWorkgroupSize > Support.DeviceProperties.limits.maxComputeWorkGroupSize_0)
@@ -155,18 +160,26 @@ namespace WinVulkanApp
 
         VkDescriptorSetLayout _descriptorSetLayout = default(VkDescriptorSetLayout);
         VkDescriptorPool _descriptorPool = default(VkDescriptorPool);
-        VkDescriptorSet _descriptorSet = default(VkDescriptorSet);
+
+        //https://vkguide.dev/docs/extra-chapter/abstracting_descriptors/
+        // "Creating and managing descriptor sets is one of the most painful things about Vulkan"
+        // managing descriptor sets falls under the label of future research.
         private unsafe void CreateDescriptors()
         {
             // descriptor binding
-            VkDescriptorSetLayoutBinding binding = new VkDescriptorSetLayoutBinding()
-            {                
+            VkDescriptorSetLayoutBinding layoutBinding = new VkDescriptorSetLayoutBinding()
+            {   
                 descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                descriptorCount = 1,
+                descriptorCount = ComputeDescriptorSets,
                 stageFlags = VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT
             };
 
-            VkDescriptorSetLayoutCreateInfo layoutCreateInfo = new VkDescriptorSetLayoutCreateInfo() { bindingCount = 1, pBindings = &binding };
+            VkDescriptorSetLayoutCreateInfo layoutCreateInfo = new VkDescriptorSetLayoutCreateInfo() 
+            { 
+                sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+                bindingCount = 1, 
+                pBindings = &layoutBinding 
+            };
             this.CreateDescriptorSetLayout(ref layoutCreateInfo, ref _descriptorSetLayout);
 
             // descriptor pool
@@ -175,11 +188,13 @@ namespace WinVulkanApp
                 descriptorCount = 1, 
                 type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER 
             };
+
             VkDescriptorPoolCreateInfo poolCreateInfo = new VkDescriptorPoolCreateInfo()
             { 
                 sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
                 poolSizeCount = 1,
-                pPoolSizes = &descriptorPoolSize
+                pPoolSizes = &descriptorPoolSize,
+                maxSets = 1
             };
 
            
@@ -187,15 +202,18 @@ namespace WinVulkanApp
 
             fixed (VkDescriptorSetLayout* layoutPtr = &_descriptorSetLayout)
             {
+                _descriptorSets = new VkDescriptorSet[ComputeDescriptorSets];
+
                 // descriptor sets
                 VkDescriptorSetAllocateInfo allocateInfo = new VkDescriptorSetAllocateInfo()
                 {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
                     descriptorPool = _descriptorPool,
-                    descriptorSetCount = 1,
+                    descriptorSetCount = ComputeDescriptorSets,
                     pSetLayouts = layoutPtr
                 };
             
-                this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSet);
+                this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
             }
 
             // connect buffer to descriptor sets
@@ -205,17 +223,18 @@ namespace WinVulkanApp
                 offset = 0,
                 range = buffer_size
             };
+
             VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
             {
-                dstSet = _descriptorSet,
-                descriptorCount = 1,
+                dstSet = _descriptorSets[0],
+                descriptorCount = (uint)_descriptorSets.Length,
                 dstBinding = 0,
                 descriptorType =  VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                 pBufferInfo = &descriptorBufferInfo
             };
 
-            VkCopyDescriptorSet copyDescriptorSet = default(VkCopyDescriptorSet);
-            this.UpdateDescriptorSet(ref writeDescriptorSet, ref copyDescriptorSet);
+      
+            this.UpdateDescriptorSet(ref writeDescriptorSet);
 
             
         }
@@ -254,14 +273,24 @@ namespace WinVulkanApp
                     pSetLayouts = layout
                 };
 
+                /*
+                VkPipelineCacheCreateInfo cacheCreateInfo = new VkPipelineCacheCreateInfo()
+                {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO,
+                    
+                }
+                */
+                VkPipelineCache
+                
+
                 Support.Device.CreatePipelineLayout(ref pipelineLayoutInfo, ref _pipelineLayout);
 
                 VkComputePipelineCreateInfo pipelineCreateInfo = new VkComputePipelineCreateInfo()
                 {
                     sType = VkStructureType.VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
                     layout = _pipelineLayout,
-                    stage = stageInfo[0]
-
+                    stage = stageInfo[0]                    
+                    
                 };
 
                 VkAllocationCallbacks allocationCallbacks = default( VkAllocationCallbacks );

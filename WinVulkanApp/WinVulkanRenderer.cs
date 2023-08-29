@@ -89,6 +89,17 @@ namespace WinVulkanApp
         }
 
 
+        public void SetupSurfaceAndDevice()
+        {
+#if DEBUG
+            VulkanFlowTracer.AddItem($"RendererVulkan.SetupPipeline");
+#endif
+
+            CreateSurface();
+
+            this.ConfigureDevices(_surface);
+        }
+
         public void SetupPipeline()
         {
 #if DEBUG

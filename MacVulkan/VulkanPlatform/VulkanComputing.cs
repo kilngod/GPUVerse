@@ -94,12 +94,12 @@ namespace VulkanPlatform
 
                 VulkanNative.vkCmdBindPipeline(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, compute.ComputePipeline);
 
-                for (int j = 0; j < compute.ComputeDescriptors.Length; j++)
+                for (int j = 0; j < compute.DescriptorSets.Length; j++)
                 {
-                    fixed (VkDescriptorSet* descriptorSetPtr = &compute.ComputeDescriptors[j])
+                    fixed (VkDescriptorSet* descriptorSetPtr = &compute.DescriptorSets[j])
                     {
                         VulkanNative.vkCmdBindDescriptorSets(compute.CommandBuffers[i], VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
-                            compute.PipelineLayout, 0, (uint)compute.ComputeDescriptors.Length, descriptorSetPtr, 0, null);
+                            compute.PipelineLayout, 0, (uint)compute.DescriptorSets.Length, descriptorSetPtr, 0, null);
                     }
                 }
 

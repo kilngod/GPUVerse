@@ -5,7 +5,6 @@ namespace VulkanPlatform
 {
     public interface IVulkanCompute
     {
-        bool UnifiedMemory { get; }
         int ComputeFamilyIndex { get; }
         IVulkanSupport Support { get; }
 
@@ -15,7 +14,8 @@ namespace VulkanPlatform
         VkCommandBuffer[] CommandBuffers { get; set; }
         VkPipelineLayout PipelineLayout { get; set; }
         VkPipeline ComputePipeline { get; set; }
-        VkDescriptorSet[] ComputeDescriptors {get;set;}
+        uint ComputeDescriptorSets { get; set; }
+        VkDescriptorSet[] DescriptorSets { get; }
         VkDescriptorSetLayout ComputeLayout { get; set; }
         VkSemaphore ComputeSemaphore { get; set; }
         VkQueue ComputeQueue { get; }

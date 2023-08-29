@@ -18,7 +18,7 @@ namespace WinVulkanApp
 
         private Form window;
 
-        private VulkanSupport support;
+        private VulkanSupport VSupport;
 
         private IVulkanRenderer renderer;
 
@@ -43,14 +43,15 @@ namespace WinVulkanApp
 
         public void InitVulkan()
         {
-            support = new VulkanSupport(DeliveryPlatform.Windows);
+            VSupport = new VulkanSupport(DeliveryPlatform.Windows);
+
+            renderer = new WinVulkanRenderer(window);
+            (renderer as WinVulkanRenderer).VSupport = VSupport;
+
+            (renderer as WinVulkanRenderer).SetupSurfaceAndDevice();
 
 
             DoCompute();
-
-
-            renderer = new WinVulkanRenderer(window);
-            (renderer as WinVulkanRenderer).VSupport = support;
 
             (renderer as WinVulkanRenderer).SetupPipeline();
 
@@ -72,13 +73,13 @@ namespace WinVulkanApp
                 renderer.DrawFrame();
             }
 
-            VulkanHelpers.CheckErrors(VulkanNative.vkDeviceWaitIdle(support.Device));
+            VulkanHelpers.CheckErrors(VulkanNative.vkDeviceWaitIdle(VSupport.Device));
         }
 
         public void CleanUp()
         {
             (renderer as WinVulkanRenderer).CleanUpPipeline();
-            support.CleanupVulkanSupport();
+            VSupport.CleanupVulkanSupport();
         }
 
         public void Run()

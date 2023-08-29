@@ -32,7 +32,11 @@ namespace MacVulkanApp
         public VkPipelineLayout PipelineLayout { get; set; }
 
         public VkPipeline Pipeline { get; set; }
-        public VkDescriptorSet[] ComputeDescriptors { get; set; }
+
+        public uint ComputeDescriptorSets { get; set; } = 1;
+
+        VkDescriptorSet[] _descriptorSets;
+        public VkDescriptorSet[] DescriptorSets { get { return _descriptorSets; } }
         public VkDescriptorSetLayout ComputeLayout { get; set; }
         public VkSemaphore ComputeSemaphore { get; set; }
 
@@ -129,7 +133,7 @@ namespace MacVulkanApp
 
         VkDescriptorSetLayout _descriptorSetLayout = default(VkDescriptorSetLayout);
         VkDescriptorPool _descriptorPool = default(VkDescriptorPool);
-        VkDescriptorSet _descriptorSet = default(VkDescriptorSet);
+       
         private unsafe void CreateDescriptors()
         {
             // descriptor binding
@@ -146,9 +150,10 @@ namespace MacVulkanApp
             // descriptor pool
             VkDescriptorPoolSize descriptorPoolSize = new VkDescriptorPoolSize() 
             { 
-                descriptorCount = 1, 
+                descriptorCount = ComputeDescriptorSets, 
                 type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER 
             };
+
             VkDescriptorPoolCreateInfo poolCreateInfo = new VkDescriptorPoolCreateInfo()
             { 
                 sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
@@ -161,15 +166,16 @@ namespace MacVulkanApp
 
             fixed (VkDescriptorSetLayout* layoutPtr = &_descriptorSetLayout)
             {
+                _descriptorSets = new VkDescriptorSet[ComputeDescriptorSets];
                 // descriptor sets
                 VkDescriptorSetAllocateInfo allocateInfo = new VkDescriptorSetAllocateInfo()
                 {
                     descriptorPool = _descriptorPool,
-                    descriptorSetCount = 1,
+                    descriptorSetCount = ComputeDescriptorSets,
                     pSetLayouts = layoutPtr
                 };
             
-                this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSet);
+                this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
             }
 
             // connect buffer to descriptor sets
@@ -181,8 +187,8 @@ namespace MacVulkanApp
             };
             VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
             {
-                dstSet = _descriptorSet,
-                descriptorCount = 1,
+                dstSet = _descriptorSets[0],
+                descriptorCount = (uint) _descriptorSets.Length,
                 dstBinding = 0,
                 descriptorType =  VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                 pBufferInfo = &descriptorBufferInfo
