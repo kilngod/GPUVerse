@@ -133,48 +133,59 @@ namespace MacVulkanApp
 
         VkDescriptorSetLayout _descriptorSetLayout = default(VkDescriptorSetLayout);
         VkDescriptorPool _descriptorPool = default(VkDescriptorPool);
-       
+
+        //https://vkguide.dev/docs/extra-chapter/abstracting_descriptors/
+        // "Creating and managing descriptor sets is one of the most painful things about Vulkan"
+        // managing descriptor sets falls under the label of future research.
         private unsafe void CreateDescriptors()
         {
             // descriptor binding
-            VkDescriptorSetLayoutBinding binding = new VkDescriptorSetLayoutBinding()
-            {                
+            VkDescriptorSetLayoutBinding layoutBinding = new VkDescriptorSetLayoutBinding()
+            {
                 descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                descriptorCount = 1,
+                descriptorCount = ComputeDescriptorSets,
                 stageFlags = VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT
             };
 
-            VkDescriptorSetLayoutCreateInfo layoutCreateInfo = new VkDescriptorSetLayoutCreateInfo() { bindingCount = 1, pBindings = &binding };
+            VkDescriptorSetLayoutCreateInfo layoutCreateInfo = new VkDescriptorSetLayoutCreateInfo()
+            {
+                sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+                bindingCount = 1,
+                pBindings = &layoutBinding
+            };
             this.CreateDescriptorSetLayout(ref layoutCreateInfo, ref _descriptorSetLayout);
 
             // descriptor pool
-            VkDescriptorPoolSize descriptorPoolSize = new VkDescriptorPoolSize() 
-            { 
-                descriptorCount = ComputeDescriptorSets, 
-                type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER 
+            VkDescriptorPoolSize descriptorPoolSize = new VkDescriptorPoolSize()
+            {
+                descriptorCount = 1,
+                type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
             };
 
             VkDescriptorPoolCreateInfo poolCreateInfo = new VkDescriptorPoolCreateInfo()
-            { 
+            {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
                 poolSizeCount = 1,
-                pPoolSizes = &descriptorPoolSize
+                pPoolSizes = &descriptorPoolSize,
+                maxSets = 1
             };
 
-           
+
             this.CreateDescriptorPool(ref poolCreateInfo, ref _descriptorPool);
 
             fixed (VkDescriptorSetLayout* layoutPtr = &_descriptorSetLayout)
             {
                 _descriptorSets = new VkDescriptorSet[ComputeDescriptorSets];
+
                 // descriptor sets
                 VkDescriptorSetAllocateInfo allocateInfo = new VkDescriptorSetAllocateInfo()
                 {
+                    sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
                     descriptorPool = _descriptorPool,
                     descriptorSetCount = ComputeDescriptorSets,
                     pSetLayouts = layoutPtr
                 };
-            
+
                 this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
             }
 
@@ -185,20 +196,22 @@ namespace MacVulkanApp
                 offset = 0,
                 range = buffer_size
             };
+
             VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
             {
                 dstSet = _descriptorSets[0],
-                descriptorCount = (uint) _descriptorSets.Length,
+                descriptorCount = (uint)_descriptorSets.Length,
                 dstBinding = 0,
-                descriptorType =  VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                 pBufferInfo = &descriptorBufferInfo
             };
 
-            VkCopyDescriptorSet copyDescriptorSet = default(VkCopyDescriptorSet);
-            this.UpdateDescriptorSet(ref writeDescriptorSet, ref copyDescriptorSet);
 
-            
+            this.UpdateDescriptorSet(ref writeDescriptorSet);
+
+
         }
+
 
 
         VkPipelineLayout _pipelineLayout = default(VkPipelineLayout);
