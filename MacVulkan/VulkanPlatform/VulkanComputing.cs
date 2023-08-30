@@ -14,8 +14,52 @@ namespace VulkanPlatform
     public static class VulkanComputing
     {
 
+        public static unsafe void CreateComputePipeline(this VkDevice device, ref VkComputePipelineCreateInfo pipelineCreateInfo, ref VkPipeline pipeline)
+        {
+            fixed (VkPipeline* pipelinePtr = &pipeline)
+            {
+                fixed (VkComputePipelineCreateInfo* pipelineCreateInfoPtr = &pipelineCreateInfo)
+                {
+                    
+                    VulkanNative.vkCreateComputePipelines(device, VkPipelineCache.Null, 1, pipelineCreateInfoPtr, null, pipelinePtr);
+                    
+                }
+            }
 
-        public static unsafe void CreateComputePipeline(this VkDevice device, ref VkComputePipelineCreateInfo pipelineCreateInfo, ref VkPipeline pipeline, ref VkAllocationCallbacks allocationCallbacks, VkPipelineCache cache = default(VkPipelineCache))
+        }
+
+        public static unsafe void CreateComputePipeline(this VkDevice device, ref VkComputePipelineCreateInfo pipelineCreateInfo, ref VkPipeline pipeline, ref VkAllocationCallbacks allocationCallbacks)
+        {
+            fixed (VkPipeline* pipelinePtr = &pipeline)
+            {
+                fixed (VkComputePipelineCreateInfo* pipelineCreateInfoPtr = &pipelineCreateInfo)
+                {
+                    fixed (VkAllocationCallbacks* callbacksPtr = &allocationCallbacks)
+                    {
+                        VulkanNative.vkCreateComputePipelines(device, VkPipelineCache.Null, 1, pipelineCreateInfoPtr, callbacksPtr, pipelinePtr);
+                    }
+                }
+            }
+
+        }
+
+
+        public static unsafe void CreateComputePipeline(this VkDevice device, ref VkComputePipelineCreateInfo pipelineCreateInfo, ref VkPipeline pipeline, ref VkPipelineCache cache)
+        {
+            fixed (VkPipeline* pipelinePtr = &pipeline)
+            {
+                fixed (VkComputePipelineCreateInfo* pipelineCreateInfoPtr = &pipelineCreateInfo)
+                {
+
+                    VulkanNative.vkCreateComputePipelines(device, cache, 1, pipelineCreateInfoPtr, null, pipelinePtr);
+
+                }
+            }
+
+        }
+
+
+        public static unsafe void CreateComputePipeline(this VkDevice device, ref VkComputePipelineCreateInfo pipelineCreateInfo, ref VkPipeline pipeline, ref VkAllocationCallbacks allocationCallbacks, ref VkPipelineCache cache)
         {
             fixed (VkPipeline* pipelinePtr = &pipeline)
             {
@@ -34,7 +78,7 @@ namespace VulkanPlatform
         public static unsafe void CreateCommandPool(this IVulkanCompute compute)
         {
 #if DEBUG
-            VulkanFlowTracer.AddItem("VulkanRendering.CreateCommandPool");
+            VulkanFlowTracer.AddItem("VulkanComputing.CreateCommandPool");
 #endif    
             VkCommandPoolCreateInfo poolInfo = new VkCommandPoolCreateInfo()
             {
@@ -56,7 +100,7 @@ namespace VulkanPlatform
         public static unsafe void CreateCommandBuffers(this IVulkanCompute compute)
         {
 #if DEBUG
-            VulkanFlowTracer.AddItem("VulkanRendering.CreateCommandBuffers");
+            VulkanFlowTracer.AddItem("VulkanComputing.CreateCommandBuffers");
 #endif
             compute.CommandBuffers = new VkCommandBuffer[compute.ComputeCommandBuffers];
 

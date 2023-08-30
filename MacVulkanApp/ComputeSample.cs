@@ -258,9 +258,9 @@ namespace MacVulkanApp
 
                 };
 
-                VkAllocationCallbacks allocationCallbacks = default( VkAllocationCallbacks );
+            
                 
-                Support.Device.CreateComputePipeline(ref pipelineCreateInfo, ref _computePipeline, ref allocationCallbacks);
+                Support.Device.CreateComputePipeline(ref pipelineCreateInfo, ref _computePipeline);
             }
         }
            
