@@ -29,7 +29,7 @@ namespace MacVulkanApp
 
         public VkCommandPool CommandPool { get; set; }
         public VkCommandBuffer[] CommandBuffers { get; set; }
-        public VkPipelineLayout PipelineLayout { get; set; }
+        public VkPipelineLayout PipelineLayout { get { return _pipelineLayout; }  }
 
       
 

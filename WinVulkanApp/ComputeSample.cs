@@ -30,7 +30,7 @@ namespace WinVulkanApp
 
         public VkCommandPool CommandPool { get; set; }
         public VkCommandBuffer[] CommandBuffers { get; set; }
-        public VkPipelineLayout PipelineLayout { get; set; }
+        public VkPipelineLayout PipelineLayout { get { return _pipelineLayout; } }
 
      
         public uint ComputeDescriptorSets { get; set; } = 1;

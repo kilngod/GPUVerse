@@ -10,7 +10,7 @@ namespace VulkanPlatform
         VkCommandPool CommandPool { get; set; }
         int ComputeCommandBuffers { get; set; }
         VkCommandBuffer[] CommandBuffers { get; set; }
-        VkPipelineLayout PipelineLayout { get; set; }
+        VkPipelineLayout PipelineLayout { get; }
         VkPipeline ComputePipeline { get; }
         uint ComputeDescriptorSets { get; set; }
         VkDescriptorSet[] DescriptorSets { get; }
