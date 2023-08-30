@@ -76,10 +76,48 @@ namespace WinVulkanApp
         }
 
 
-        public void SaveRenderedImage(string fileNamePath)
+        public unsafe void SaveRenderedImage(string fileNamePath)
         {
+            Bitmap bitmap = new Bitmap((int) kWidth, (int) kHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
+            Pixel[] pixel_data = new Pixel[kWidth * kHeight];
+
+
+            VulkanNative.vkMapMemory(Support.Device, _deviceMemory, 0, buffer_size,0, (void**)&pixel_data);
+
+            
+            for (int i = 0; i < kWidth * kHeight; i++)
+            {
+                Pixel pixel = pixel_data[i];
+                int red = Convert.ToInt32(pixel.r * 255);
+                int green = Convert.ToInt32(pixel.g * 225);
+                int blue = Convert.ToInt32(pixel.b * 225);
+                int x = (int)( i % kWidth);
+                int y = (int)(i / kHeight);
+                bitmap.SetPixel(x,y, Color.FromArgb(red, green, blue));
+            }
         }
+
+        /*
+         * 
+         *   void SaveRenderedImage(const char *outfilename) {
+    auto pixel_data = static_cast<Pixel *>(
+        device_->mapMemory(*buffer_memory_, 0, buffer_size, {}));
+    std::vector<unsigned char> image;
+    image.reserve(kWidth * kHeight * 4);
+    for (int i = 0; i < kWidth * kHeight; ++i) {
+      image.push_back(static_cast<unsigned char>(255.0f * (pixel_data[i].r)));
+      image.push_back(static_cast<unsigned char>(255.0f * (pixel_data[i].g)));
+      image.push_back(static_cast<unsigned char>(255.0f * (pixel_data[i].b)));
+      image.push_back(static_cast<unsigned char>(255.0f * (pixel_data[i].a)));
+    }
+    device_->unmapMemory(*buffer_memory_);
+    unsigned error = lodepng::encode(outfilename, image, kWidth, kHeight);
+    if (error) {
+      throw std::runtime_error("Encoding error: "s + lodepng_error_text(error));
+    }
+  }
+        */
 
 
         public void SetupComputePipeline()
@@ -283,7 +321,7 @@ namespace WinVulkanApp
 
 
 
-                Support.Device.CreatePipelineLayout(ref pipelineLayoutInfo, ref _pipelineLayout);
+        Support.Device.CreatePipelineLayout(ref pipelineLayoutInfo, ref _pipelineLayout);
 
                 VkComputePipelineCreateInfo pipelineCreateInfo = new VkComputePipelineCreateInfo()
                 {
@@ -302,9 +340,9 @@ namespace WinVulkanApp
         
     }
 
-    struct Pixel
+    public struct Pixel
     {
-        float r, g, b, a;
+        public float r, g, b, a;
     };
 }
 
