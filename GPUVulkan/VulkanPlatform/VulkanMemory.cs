@@ -1,13 +1,56 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using GPUVulkan;
 
 namespace VulkanPlatform
 {
 	public static class VulkanMemory
 	{
+      
+        public unsafe static void DownloadBufferData<T>(this VkDevice device, VkDeviceMemory memory, ref T[] data) where T : struct
+        {
+            ulong size = (ulong)(data.Length * Unsafe.SizeOf<T>());
+            void* mappedMemory;
+            VulkanNative.vkMapMemory(device, memory, 0, size, 0, &mappedMemory);
+            GCHandle gh = GCHandle.Alloc(data, GCHandleType.Pinned);
+            Unsafe.CopyBlock(gh.AddrOfPinnedObject().ToPointer(), mappedMemory, (uint)size);
+            gh.Free();
+            VulkanNative.vkUnmapMemory(device, memory);
+        }
 
+        public unsafe static void DownloadBufferData<T>(this VkDevice device, VkDeviceMemory memory, ref T data, uint count) where T : struct
+        {
+            ulong size = (ulong)(count * Unsafe.SizeOf<T>());
+            void* mappedMemory;
+            VulkanNative.vkMapMemory(device, memory, 0, size, 0, &mappedMemory);
+            void* dataPtr = Unsafe.AsPointer(ref data);
+            Unsafe.CopyBlock(dataPtr, mappedMemory, (uint)size);
+            VulkanNative.vkUnmapMemory(device, memory);
+        }
 
-		public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags requestedMemoryFlags, ref bool localMemory)
+        public unsafe static void UploadBufferData<T>(this VkDevice device, VkDeviceMemory memory, ref T[] data) where T : struct
+        {
+            ulong size = (ulong)(data.Length * Unsafe.SizeOf<T>());
+            void* mappedMemory;
+            VulkanNative.vkMapMemory(device, memory, 0, size, 0, &mappedMemory);
+            GCHandle gh = GCHandle.Alloc(data, GCHandleType.Pinned);
+            Unsafe.CopyBlock(mappedMemory, gh.AddrOfPinnedObject().ToPointer(), (uint)size);
+            gh.Free();
+            VulkanNative.vkUnmapMemory(device, memory);
+        }
+
+        public unsafe static void UploadBufferData<T>(this VkDevice device, VkDeviceMemory memory, ref T data, uint count) where T : struct
+        {
+            ulong size = (ulong)(count * Unsafe.SizeOf<T>());
+            void* mappedMemory;
+            VulkanNative.vkMapMemory(device, memory, 0, size, 0, &mappedMemory);
+            void* dataPtr = Unsafe.AsPointer(ref data);
+            Unsafe.CopyBlock(mappedMemory, dataPtr, (uint)size);
+            VulkanNative.vkUnmapMemory(device, memory);
+        }
+
+        public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags requestedMemoryFlags, ref bool localMemory)
 		{
 
             VkMemoryPropertyFlags memoryPropertyFlags = memoryProperties.GetMemoryType(0).propertyFlags;

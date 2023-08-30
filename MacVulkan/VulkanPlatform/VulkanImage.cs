@@ -6,7 +6,7 @@ namespace VulkanPlatform
 {
     public static class VulkanImage
     {
-
+        /*
         public static void CreateTextureImage(this IVulkanSupport support)
         {
             VkImage image;
@@ -71,7 +71,7 @@ namespace VulkanPlatform
 
             VulkanNative.vkDestroyImage(support.Device, stagingImage, null);
         }
-
+        */
 
         public unsafe static void CreateImage(
             this IVulkanSupport support,
@@ -84,7 +84,7 @@ namespace VulkanPlatform
          ref VkImage image,
          ref VkDeviceMemory memory)
         {
-            VkImageCreateInfo imageCI = new()
+            VkImageCreateInfo imageCI = new VkImageCreateInfo()
             {
                 imageType = VkImageType.VK_IMAGE_TYPE_2D,
                 extent = new VkExtent3D() { width = width, height = height, depth = 1 },

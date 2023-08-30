@@ -76,26 +76,27 @@ namespace WinVulkanApp
         }
 
 
-        public unsafe void SaveRenderedImage(string fileNamePath)
+        public unsafe void SaveRenderedImage()
         {
             Bitmap bitmap = new Bitmap((int) kWidth, (int) kHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
-            Pixel[] pixel_data = new Pixel[kWidth * kHeight];
+            VulkanPixel[] pixel_data = new VulkanPixel[kWidth * kHeight];
 
+            Support.Device.DownloadBufferData(_deviceMemory, ref pixel_data);
 
-            VulkanNative.vkMapMemory(Support.Device, _deviceMemory, 0, buffer_size,0, (void**)&pixel_data);
-
+           
             
             for (int i = 0; i < kWidth * kHeight; i++)
             {
-                Pixel pixel = pixel_data[i];
+                VulkanPixel pixel = pixel_data[i];
                 int red = Convert.ToInt32(pixel.r * 255);
                 int green = Convert.ToInt32(pixel.g * 225);
                 int blue = Convert.ToInt32(pixel.b * 225);
                 int x = (int)( i % kWidth);
-                int y = (int)(i / kHeight);
+                int y = (int)(i / kWidth);
                 bitmap.SetPixel(x,y, Color.FromArgb(red, green, blue));
             }
+            bitmap.Save(WinIO.DownloadsFolderPath()+ "\\Mandelbrot.bmp");
         }
 
 
@@ -233,7 +234,7 @@ namespace WinVulkanApp
                 };
                 this.SubmitAndWait(new VkSubmitInfo[] { submitInfo });
             }
-            SaveRenderedImage("mandelbrot.png");
+            SaveRenderedImage();
         }
 
         
@@ -249,7 +250,7 @@ namespace WinVulkanApp
         private unsafe void CreateBuffersAndMemory()
         {
             // size pixel map
-            buffer_size = (ulong)sizeof(Pixel) * kWidth * kHeight;
+            buffer_size = (ulong)sizeof(VulkanPixel) * kWidth * kHeight;
             _buffer = default(VkBuffer);
             Support.CreateBuffer(buffer_size, ref _buffer);
             
@@ -408,9 +409,6 @@ namespace WinVulkanApp
         
     }
 
-    public struct Pixel
-    {
-        public float r, g, b, a;
-    };
+  
 }
 

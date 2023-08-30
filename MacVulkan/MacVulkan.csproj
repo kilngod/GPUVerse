@@ -34,8 +34,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="netstandard" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Mac" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +74,7 @@
     <Compile Include="VulkanPlatform\VulkanMemory.cs" />
     <Compile Include="VulkanPlatform\VulkanPhysicalDevice.cs" />
     <Compile Include="VulkanPlatform\VulkanPipeline.cs" />
+    <Compile Include="VulkanPlatform\VulkanPixel.cs" />
     <Compile Include="VulkanPlatform\VulkanRendering.cs" />
     <Compile Include="VulkanPlatform\VulkanSpirV.cs" />
     <Compile Include="VulkanPlatform\VulkanStringList.cs" />
@@ -80,13 +85,15 @@
     <Compile Include="VulkanPlatform\VulkanQueues.cs" />
     <Compile Include="VulkanPlatform\VulkanDescriptor.cs" />
     <Compile Include="VulkanPlatform\VulkanComputing.cs" />
-    <Compile Include="VulkanPlatform\VulkanMemory.cs" />
     <Compile Include="VulkanPlatform\VulkanImage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="libMoltenVK.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
