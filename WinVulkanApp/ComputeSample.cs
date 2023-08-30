@@ -279,9 +279,10 @@ namespace WinVulkanApp
                     sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO,
                     
                 }
-                */
                 VkPipelineCache
-                
+                */
+
+
 
                 Support.Device.CreatePipelineLayout(ref pipelineLayoutInfo, ref _pipelineLayout);
 
