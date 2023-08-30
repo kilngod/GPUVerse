@@ -31,7 +31,7 @@ namespace MacVulkanApp
         public VkCommandBuffer[] CommandBuffers { get; set; }
         public VkPipelineLayout PipelineLayout { get; set; }
 
-        public VkPipeline Pipeline { get; set; }
+      
 
         public uint ComputeDescriptorSets { get; set; } = 1;
 
@@ -42,7 +42,7 @@ namespace MacVulkanApp
 
       
 
-        public VkPipeline ComputePipeline { get; set; }
+        public VkPipeline ComputePipeline { get { return _computePipeline; } }
 
         private VkBuffer _buffer;
         private VkDeviceMemory _deviceMemory;

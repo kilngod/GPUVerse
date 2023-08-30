@@ -7,13 +7,11 @@ namespace VulkanPlatform
     {
         int ComputeFamilyIndex { get; }
         IVulkanSupport Support { get; }
-
         VkCommandPool CommandPool { get; set; }
-
         int ComputeCommandBuffers { get; set; }
         VkCommandBuffer[] CommandBuffers { get; set; }
         VkPipelineLayout PipelineLayout { get; set; }
-        VkPipeline ComputePipeline { get; set; }
+        VkPipeline ComputePipeline { get; }
         uint ComputeDescriptorSets { get; set; }
         VkDescriptorSet[] DescriptorSets { get; }
         VkDescriptorSetLayout ComputeLayout { get; set; }
