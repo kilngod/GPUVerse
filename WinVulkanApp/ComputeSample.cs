@@ -166,40 +166,6 @@ namespace WinVulkanApp
         }
 
 
-        private void CreateImage(
-            uint width,
-            uint height,
-            VkFormat format,
-            VkImageTiling tiling,
-            VkImageUsageFlags usage,
-            VkMemoryPropertyFlags properties,
-            out VkImage image,
-            out VkDeviceMemory memory)
-        {
-            VkImageCreateInfo imageCI = VkImageCreateInfo.New();
-            imageCI.imageType = VkImageType.Image2D;
-            imageCI.extent.width = width;
-            imageCI.extent.height = height;
-            imageCI.extent.depth = 1;
-            imageCI.mipLevels = 1;
-            imageCI.arrayLayers = 1;
-            imageCI.format = format;
-            imageCI.tiling = tiling;
-            imageCI.initialLayout = VkImageLayout.Preinitialized;
-            imageCI.usage = usage;
-            imageCI.sharingMode = VkSharingMode.Exclusive;
-            imageCI.samples = VkSampleCountFlags.Count1;
-
-            vkCreateImage(_device, ref imageCI, null, out image);
-
-            vkGetImageMemoryRequirements(_device, image, out VkMemoryRequirements memRequirements);
-            VkMemoryAllocateInfo allocInfo = VkMemoryAllocateInfo.New();
-            allocInfo.allocationSize = memRequirements.size;
-            allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
-            vkAllocateMemory(_device, ref allocInfo, null, out memory);
-
-            vkBindImageMemory(_device, image, memory, 0);
-        }
         /*
          * 
          *   void SaveRenderedImage(const char *outfilename) {

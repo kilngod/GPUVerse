@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using GPUVulkan;
 using VulkanPlatform;
 
@@ -58,6 +60,76 @@ namespace MacVulkanApp
         {
 
         }
+
+         
+         private void CreateTextureImage()
+        {
+            Image<Rgba32> image;
+            using (var fs = File.OpenRead(Path.Combine(AppContext.BaseDirectory, "Textures", "texture.jpg")))
+            {
+                image = Image.Load(fs);
+            }
+            ulong imageSize = (ulong)(image.Width * image.Height * Unsafe.SizeOf<Rgba32>());
+
+            CreateImage(
+                (uint)image.Width,
+                (uint)image.Height,
+                VkFormat.R8g8b8a8Unorm,
+                VkImageTiling.Linear,
+                VkImageUsageFlags.TransferSrc,
+                VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent,
+                out VkImage stagingImage,
+                out VkDeviceMemory stagingImageMemory);
+
+            VkImageSubresource subresource = new VkImageSubresource();
+            subresource.aspectMask = VkImageAspectFlags.Color;
+            subresource.mipLevel = 0;
+            subresource.arrayLayer = 0;
+
+            vkGetImageSubresourceLayout(_device, stagingImage, ref subresource, out VkSubresourceLayout stagingImageLayout);
+            ulong rowPitch = stagingImageLayout.rowPitch;
+
+            void* mappedPtr;
+            vkMapMemory(_device, stagingImageMemory, 0, imageSize, 0, &mappedPtr);
+            fixed (void* pixelsPtr = &image.DangerousGetPinnableReferenceToPixelBuffer())
+            {
+                if (rowPitch == (ulong)image.Width)
+                {
+                    Buffer.MemoryCopy(pixelsPtr, mappedPtr, imageSize, imageSize);
+                }
+                else
+                {
+                    for (uint y = 0; y < image.Height; y++)
+                    {
+                        byte* dstRowStart = ((byte*)mappedPtr) + (rowPitch * y);
+                        byte* srcRowStart = ((byte*)pixelsPtr) + (image.Width * y * Unsafe.SizeOf<Rgba32>());
+                        Unsafe.CopyBlock(dstRowStart, srcRowStart, (uint)(image.Width * Unsafe.SizeOf<Rgba32>()));
+                    }
+                }
+            }
+            vkUnmapMemory(_device, stagingImageMemory);
+
+            CreateImage(
+                (uint)image.Width,
+                (uint)image.Height,
+                VkFormat.R8g8b8a8Unorm,
+                VkImageTiling.Optimal,
+                VkImageUsageFlags.TransferDst | VkImageUsageFlags.Sampled,
+                VkMemoryPropertyFlags.DeviceLocal,
+                out _textureImage,
+                out _textureImageMemory);
+
+            TransitionImageLayout(stagingImage, VkFormat.R8g8b8a8Unorm, VkImageLayout.Preinitialized, VkImageLayout.TransferSrcOptimal);
+            TransitionImageLayout(_textureImage, VkFormat.R8g8b8a8Unorm, VkImageLayout.Preinitialized, VkImageLayout.TransferDstOptimal);
+            CopyImage(stagingImage, _textureImage, (uint)image.Width, (uint)image.Height);
+            TransitionImageLayout(_textureImage, VkFormat.R8g8b8a8Unorm, VkImageLayout.TransferDstOptimal, VkImageLayout.ShaderReadOnlyOptimal);
+
+            vkDestroyImage(_device, stagingImage, null);
+        }
+
+
+     
+       */
 
         public void SetupComputePipeline()
         {
