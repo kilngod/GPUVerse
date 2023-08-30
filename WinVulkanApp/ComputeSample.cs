@@ -98,6 +98,108 @@ namespace WinVulkanApp
             }
         }
 
+
+        /*
+         private void CreateTextureImage()
+        {
+            Image<Rgba32> image;
+            using (var fs = File.OpenRead(Path.Combine(AppContext.BaseDirectory, "Textures", "texture.jpg")))
+            {
+                image = Image.Load(fs);
+            }
+            ulong imageSize = (ulong)(image.Width * image.Height * Unsafe.SizeOf<Rgba32>());
+
+            CreateImage(
+                (uint)image.Width,
+                (uint)image.Height,
+                VkFormat.R8g8b8a8Unorm,
+                VkImageTiling.Linear,
+                VkImageUsageFlags.TransferSrc,
+                VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent,
+                out VkImage stagingImage,
+                out VkDeviceMemory stagingImageMemory);
+
+            VkImageSubresource subresource = new VkImageSubresource();
+            subresource.aspectMask = VkImageAspectFlags.Color;
+            subresource.mipLevel = 0;
+            subresource.arrayLayer = 0;
+
+            vkGetImageSubresourceLayout(_device, stagingImage, ref subresource, out VkSubresourceLayout stagingImageLayout);
+            ulong rowPitch = stagingImageLayout.rowPitch;
+
+            void* mappedPtr;
+            vkMapMemory(_device, stagingImageMemory, 0, imageSize, 0, &mappedPtr);
+            fixed (void* pixelsPtr = &image.DangerousGetPinnableReferenceToPixelBuffer())
+            {
+                if (rowPitch == (ulong)image.Width)
+                {
+                    Buffer.MemoryCopy(pixelsPtr, mappedPtr, imageSize, imageSize);
+                }
+                else
+                {
+                    for (uint y = 0; y < image.Height; y++)
+                    {
+                        byte* dstRowStart = ((byte*)mappedPtr) + (rowPitch * y);
+                        byte* srcRowStart = ((byte*)pixelsPtr) + (image.Width * y * Unsafe.SizeOf<Rgba32>());
+                        Unsafe.CopyBlock(dstRowStart, srcRowStart, (uint)(image.Width * Unsafe.SizeOf<Rgba32>()));
+                    }
+                }
+            }
+            vkUnmapMemory(_device, stagingImageMemory);
+
+            CreateImage(
+                (uint)image.Width,
+                (uint)image.Height,
+                VkFormat.R8g8b8a8Unorm,
+                VkImageTiling.Optimal,
+                VkImageUsageFlags.TransferDst | VkImageUsageFlags.Sampled,
+                VkMemoryPropertyFlags.DeviceLocal,
+                out _textureImage,
+                out _textureImageMemory);
+
+            TransitionImageLayout(stagingImage, VkFormat.R8g8b8a8Unorm, VkImageLayout.Preinitialized, VkImageLayout.TransferSrcOptimal);
+            TransitionImageLayout(_textureImage, VkFormat.R8g8b8a8Unorm, VkImageLayout.Preinitialized, VkImageLayout.TransferDstOptimal);
+            CopyImage(stagingImage, _textureImage, (uint)image.Width, (uint)image.Height);
+            TransitionImageLayout(_textureImage, VkFormat.R8g8b8a8Unorm, VkImageLayout.TransferDstOptimal, VkImageLayout.ShaderReadOnlyOptimal);
+
+            vkDestroyImage(_device, stagingImage, null);
+        }
+
+
+        private void CreateImage(
+            uint width,
+            uint height,
+            VkFormat format,
+            VkImageTiling tiling,
+            VkImageUsageFlags usage,
+            VkMemoryPropertyFlags properties,
+            out VkImage image,
+            out VkDeviceMemory memory)
+        {
+            VkImageCreateInfo imageCI = VkImageCreateInfo.New();
+            imageCI.imageType = VkImageType.Image2D;
+            imageCI.extent.width = width;
+            imageCI.extent.height = height;
+            imageCI.extent.depth = 1;
+            imageCI.mipLevels = 1;
+            imageCI.arrayLayers = 1;
+            imageCI.format = format;
+            imageCI.tiling = tiling;
+            imageCI.initialLayout = VkImageLayout.Preinitialized;
+            imageCI.usage = usage;
+            imageCI.sharingMode = VkSharingMode.Exclusive;
+            imageCI.samples = VkSampleCountFlags.Count1;
+
+            vkCreateImage(_device, ref imageCI, null, out image);
+
+            vkGetImageMemoryRequirements(_device, image, out VkMemoryRequirements memRequirements);
+            VkMemoryAllocateInfo allocInfo = VkMemoryAllocateInfo.New();
+            allocInfo.allocationSize = memRequirements.size;
+            allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
+            vkAllocateMemory(_device, ref allocInfo, null, out memory);
+
+            vkBindImageMemory(_device, image, memory, 0);
+        }
         /*
          * 
          *   void SaveRenderedImage(const char *outfilename) {
