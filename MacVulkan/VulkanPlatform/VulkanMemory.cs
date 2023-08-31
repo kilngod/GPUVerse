@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+
 
 namespace VulkanPlatform
 {
@@ -41,6 +42,8 @@ namespace VulkanPlatform
             gh.Free();
             VulkanNative.vkUnmapMemory(device, memory);
         }
+
+        
 
         public unsafe static void UploadBufferData<T>(this VkDevice device, VkDeviceMemory memory, ref T data, uint count) where T : struct
         {

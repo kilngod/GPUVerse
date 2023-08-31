@@ -174,9 +174,9 @@ namespace MacVulkanApp
 
             List<VulkanSpirV> orderedShaderList = new List<VulkanSpirV>();
             string resourceFolder = AppContext.BaseDirectory.Replace("MonoBundle", "Resources");
-            VulkanSpirV vert = new VulkanSpirV() { EntryName = "main", Name = "Vertex for Trangle", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_VERTEX_BIT, SpirVByte = MacIO.LoadRawResource(resourceFolder + "vert.spv") };
+            VulkanSpirV vert = new VulkanSpirV() { EntryName = "main", Name = "Vertex for Trangle", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_VERTEX_BIT, SpirVByte = VulkanIO.LoadRawResource(resourceFolder + "vert.spv") };
             orderedShaderList.Add(vert);
-            VulkanSpirV frag = new VulkanSpirV() { EntryName = "main", Name = "Fragment for Trangle", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_FRAGMENT_BIT, SpirVByte = MacIO.LoadRawResource(resourceFolder + "frag.spv") };
+            VulkanSpirV frag = new VulkanSpirV() { EntryName = "main", Name = "Fragment for Trangle", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_FRAGMENT_BIT, SpirVByte = VulkanIO.LoadRawResource(resourceFolder + "frag.spv") };
             orderedShaderList.Add(frag);
             this.CreateGraphicsPipeline(orderedShaderList);
 
