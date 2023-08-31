@@ -14,7 +14,7 @@ using System.IO;
 
 namespace VulkanPlatform
 {
-	public static class MacIO
+	public static class VulkanIO
 	{
 		
         public static byte[] LoadRawResource(string ResourceFilePath)

@@ -65,27 +65,6 @@ namespace WinVulkanApp
         uint kWorkgroupSize = 32;
         ulong buffer_size;
 
-        public static byte[] LoadRawResource(string ResourceFilePath)
-        {
-            byte[] byteResult;
-
-            using (FileStream rawStream = new FileStream(ResourceFilePath, FileMode.Open))
-            {
-
-                // MemoryStream apparently corrects corruption issue with using Seek on MacCatalyst or Android
-                MemoryStream stream = new MemoryStream();
-                rawStream.CopyTo(stream);
-                byteResult = stream.ToArray();
-
-
-
-                rawStream.Close();
-            }
-
-            return byteResult;
-
-        }
-
 
         public unsafe void SaveRenderedImage()
         {

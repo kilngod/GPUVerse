@@ -13,8 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using AppKit;
 using GPUVulkan;
 using VulkanPlatform;
+using CoreGraphics;
+using Foundation;
+using System.Runtime.InteropServices;
 
 namespace MacVulkanApp
 {
@@ -67,27 +71,54 @@ namespace MacVulkanApp
         uint kWorkgroupSize = 32;
         ulong buffer_size;
 
-        public void SaveRenderedImage()
+        public unsafe void SaveRenderedImage()
         {
-            Bitmap bitmap = new Bitmap((int)kWidth, (int)kHeight, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-
+            
             VulkanPixel[] pixel_data = new VulkanPixel[kWidth * kHeight];
 
             Support.Device.DownloadBufferData(_deviceMemory, ref pixel_data);
 
+           
+            int bytesPerRow = (int) kWidth * 4;
+            IntPtr buffer = Marshal.AllocHGlobal((int) (kWidth * kHeight * 4));
 
-
-            for (int i = 0; i < kWidth * kHeight; i++)
+            using (CGBitmapContext context = new CGBitmapContext(buffer, (int)kWidth, (int)kHeight, 8, bytesPerRow, CGColorSpace.CreateDeviceRGB(), CGImageAlphaInfo.PremultipliedLast))
             {
-                VulkanPixel pixel = pixel_data[i];
-                int red = Convert.ToInt32(pixel.r * 255);
-                int green = Convert.ToInt32(pixel.g * 225);
-                int blue = Convert.ToInt32(pixel.b * 225);
-                int x = (int)(i % kWidth);
-                int y = (int)(i / kWidth);
-                bitmap.SetPixel(x, y, Color.FromArgb(red, green, blue));
+
+                byte* ptr = (byte*)buffer.ToPointer();
+                VulkanPixel pixel;
+                for (uint offset =0; offset < kWidth * kHeight; offset++)
+                {
+                    pixel = pixel_data[offset];
+                    ptr[offset] = Convert.ToByte(pixel.r * 255);
+                    ptr[offset+1] = Convert.ToByte(pixel.g * 255);
+                    ptr[offset+2] = Convert.ToByte(pixel.b * 255);
+                    ptr[offset+3] = 255;
+
+
+                }
+
+                
+
+                // Create CGImage from the context
+                CGImage image = context.ToImage();
+
+                // Create NSImage from CGImage
+                NSImage nsImage = new NSImage(image, new CGSize(kWidth, kHeight));
+
+                NSData imageData = nsImage.AsTiff();
+
+                // Save the NSImage to a file
+                var imageRep = new NSBitmapImageRep(imageData);
+                var properties = new NSDictionary();
+                var pngData = imageRep.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png, properties);
+
+                // Save the PNG data to a file
+                var downloadsFolder = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DownloadsDirectory, NSSearchPathDomain.User)[0].Path;
+                var filePath = Path.Combine(downloadsFolder, "Mandelbrot.png");
+                bool success = pngData.Save(filePath, true);
             }
-            bitmap.Save("~/Downloads/Mandelbrot.bmp");
+            Marshal.FreeHGlobal(buffer);
         }
 
          
@@ -106,7 +137,7 @@ namespace MacVulkanApp
             List<VulkanSpirV> computeShaderList = new List<VulkanSpirV>();
             string targetFolder = "/Contents/";
             string resourceFolder = AppContext.BaseDirectory.Substring(0,AppContext.BaseDirectory.IndexOf(targetFolder) + targetFolder.Length) + "Resources/";
-            VulkanSpirV computeV = new VulkanSpirV() { EntryName = "main", Name = "Compute", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT, SpirVByte = MacIO.LoadRawResource(resourceFolder + "comp.spv") };
+            VulkanSpirV computeV = new VulkanSpirV() { EntryName = "main", Name = "Compute", ShaderStageType = VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT, SpirVByte = VulkanIO.LoadRawResource(resourceFolder + "comp.spv") };
             computeShaderList.Add(computeV);
 
             CreatePipeline(computeShaderList);
