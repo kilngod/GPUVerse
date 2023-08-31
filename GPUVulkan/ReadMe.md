@@ -18,7 +18,7 @@ As we have noted elsewhere, we will like have to create an Xcode "framework" or 
 
 ## Static Inversion
 
-It seemed less than prudent to create a giant object library wrapper around Vulkan as we simply do not know everyone's possible "use" cases.
+It seemed less than prudent to create a giant object library wrapper around Vulkan as we simply do not know everyone's possible "use" case.
 Therefor, we elected a minimalist library to wrap Vulkan with 3 Interfaces and 1 object, everything else is accomplished via extension methods.
 
 The logic is very simple, if you do not like our extension method, feel free to code your own extension method.
