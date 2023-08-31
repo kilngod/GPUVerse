@@ -104,7 +104,7 @@ namespace MacVulkanApp
 
                 // Save the PNG data to a file
                 var downloadsFolder = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DownloadsDirectory, NSSearchPathDomain.User)[0].Path;
-                var filePath = Path.Combine(downloadsFolder, "MyImage.png");
+                var filePath = Path.Combine(downloadsFolder, "Mandelbrot.png");
                 bool success = pngData.Save(filePath, true);
             }
             Marshal.FreeHGlobal(buffer);
