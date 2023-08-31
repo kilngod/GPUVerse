@@ -76,7 +76,7 @@ namespace MacVulkanApp
 
                 byte* ptr = (byte*)buffer.ToPointer();
                 VulkanPixel pixel;
-                for (int offset =0; offset < kWidth * kHeight; offset++)
+                for (uint offset =0; offset < kWidth * kHeight; offset++)
                 {
                     pixel = pixel_data[offset];
                     ptr[offset] = Convert.ToByte(pixel.r * 255);
