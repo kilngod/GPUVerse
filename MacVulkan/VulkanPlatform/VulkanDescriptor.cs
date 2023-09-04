@@ -99,58 +99,11 @@ namespace VulkanPlatform
 
 
 
-        /*
-
-        https://github.com/andrecunha/mandelbrot_vulkan_cpp/blob/master/src/mandelbrot.cc
-
-  void CreateDescriptorSetLayout() {
-    auto descriptor_set_layout_binding = vk::DescriptorSetLayoutBinding();
-    descriptor_set_layout_binding
-        .setDescriptorType(vk::DescriptorType::eStorageBuffer)
-        .setDescriptorCount(1)
-        .setStageFlags(vk::ShaderStageFlagBits::eCompute);
-    auto descriptor_set_layout_create_info =
-        vk::DescriptorSetLayoutCreateInfo();
-    descriptor_set_layout_create_info.setBindingCount(1).setPBindings(
-        &descriptor_set_layout_binding);
-    descriptor_set_layout_ = device_->createDescriptorSetLayoutUnique(
-        descriptor_set_layout_create_info);
-  }
-
-  void CreateDescriptorPool() {
-    auto descriptor_pool_size = vk::DescriptorPoolSize();
-    descriptor_pool_size.setType(vk::DescriptorType::eStorageBuffer)
-        .setDescriptorCount(1);
-    auto descriptor_pool_create_info = vk::DescriptorPoolCreateInfo();
-    descriptor_pool_create_info.setMaxSets(1).setPoolSizeCount(1).setPPoolSizes(
-        &descriptor_pool_size);
-    descriptor_pool_ =
-        device_->createDescriptorPoolUnique(descriptor_pool_create_info);
-  }
-
-  void CreateDescriptorSets() {
-    auto descriptor_set_allocate_info = vk::DescriptorSetAllocateInfo();
-    descriptor_set_allocate_info.setDescriptorPool(*descriptor_pool_)
-        .setDescriptorSetCount(1)
-        .setPSetLayouts(&descriptor_set_layout_.get());
-    descriptor_sets_ =
-        device_->allocateDescriptorSets(descriptor_set_allocate_info);
-  }
-
-  void ConnectBufferWithDescriptorSets() {
-    auto descriptor_buffer_info = vk::DescriptorBufferInfo();
-    descriptor_buffer_info.setBuffer(*buffer_).setOffset(0).setRange(
-        buffer_size);
-    auto write_descriptor_set = vk::WriteDescriptorSet();
-    write_descriptor_set.setDstSet(descriptor_sets_[0])
-        .setDstBinding(0)
-        .setDescriptorCount(1)
-        .setDescriptorType(vk::DescriptorType::eStorageBuffer)
-        .setPBufferInfo(&descriptor_buffer_info);
-    device_->updateDescriptorSets({write_descriptor_set}, {});
-  }
-
-		*/
+       
     }
 }
 
+/*
+https://vkguide.dev/docs/extra-chapter/abstracting_descriptors/
+
+*/

@@ -154,18 +154,21 @@ namespace VulkanPlatform
             VkShaderModule[] shaderModules = new VkShaderModule[shaderSource.Count];
             VkPipelineShaderStageCreateInfo[] stageInfo = new VkPipelineShaderStageCreateInfo[shaderSource.Count];
 
-            for (int i = 0; i < shaderSource.Count; i++)
+            Parallel.For(0,shaderSource.Count,i =>
             {
-                shaderModules[i] = renderer.VSupport.Device.CreateShaderModule(shaderSource[i].SpirVByte);
-                stageInfo[i] = new VkPipelineShaderStageCreateInfo()
+                //for (int i = 0; i < shaderSource.Count; i++)
                 {
-                    sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-                    stage = shaderSource[i].ShaderStageType,
-                    module = shaderModules[i],
-                    pName = shaderSource[i].EntryName.ToPointer(),
-                };
+                    shaderModules[i] = renderer.VSupport.Device.CreateShaderModule(shaderSource[i].SpirVByte);
+                    stageInfo[i] = new VkPipelineShaderStageCreateInfo()
+                    {
+                        sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                        stage = shaderSource[i].ShaderStageType,
+                        module = shaderModules[i],
+                        pName = shaderSource[i].EntryName.ToPointer(),
+                    };
 
-            }
+                }
+            });
 
             
             fixed (VkPipelineShaderStageCreateInfo* shaderStages = &stageInfo[0])
