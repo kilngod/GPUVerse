@@ -13,9 +13,14 @@ using System;
 using GPUVulkan;
 
 /*
+ https://vkguide.dev/docs/chapter-4/descriptors_code_more/
+  
 https://vkguide.dev/docs/extra-chapter/abstracting_descriptors/
 
 Vulkan is meant to be multi-threaded, descriptors are designed to be used with many threads. 
+This code need to be adjusted to reflect proper multi threading support.
+
+https://www.intel.com/content/www/us/en/developer/articles/training/api-without-secrets-introduction-to-vulkan-part-6.html
 
 */
 
