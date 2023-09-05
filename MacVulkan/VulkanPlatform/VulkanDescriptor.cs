@@ -12,6 +12,13 @@
 using System;
 using GPUVulkan;
 
+/*
+https://vkguide.dev/docs/extra-chapter/abstracting_descriptors/
+
+Vulkan is meant to be multi-threaded, descriptors are designed to be used with many threads. 
+
+*/
+
 namespace VulkanPlatform
 {
 	public static class VulkanDescriptor
@@ -103,7 +110,4 @@ namespace VulkanPlatform
     }
 }
 
-/*
-https://vkguide.dev/docs/extra-chapter/abstracting_descriptors/
 
-*/
