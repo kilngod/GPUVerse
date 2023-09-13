@@ -219,7 +219,7 @@ namespace MacVulkanApp
                 bindingCount = 1,
                 pBindings = &layoutBinding
             };
-            this.CreateDescriptorSetLayout(ref layoutCreateInfo, ref _descriptorSetLayout);
+            this.Support.Device.CreateDescriptorSetLayout(ref layoutCreateInfo, ref _descriptorSetLayout);
 
             // descriptor pool
             VkDescriptorPoolSize descriptorPoolSize = new VkDescriptorPoolSize()
@@ -237,7 +237,7 @@ namespace MacVulkanApp
             };
 
 
-            this.CreateDescriptorPool(ref poolCreateInfo, ref _descriptorPool);
+            this.Support.Device.CreateDescriptorPool(ref poolCreateInfo, ref _descriptorPool);
 
             fixed (VkDescriptorSetLayout* layoutPtr = &_descriptorSetLayout)
             {
@@ -252,7 +252,7 @@ namespace MacVulkanApp
                     pSetLayouts = layoutPtr
                 };
 
-                this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
+                this.Support.Device.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
             }
 
             // connect buffer to descriptor sets
@@ -273,7 +273,7 @@ namespace MacVulkanApp
             };
 
 
-            this.UpdateDescriptorSet(ref writeDescriptorSet);
+            this.Support.Device.UpdateDescriptorSet(ref writeDescriptorSet);
 
 
         }
