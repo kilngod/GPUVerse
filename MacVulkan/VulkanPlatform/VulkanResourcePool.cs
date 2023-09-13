@@ -1,4 +1,14 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------
+//                                        ILGPU
+//                           Copyright (c) 2023 ILGPU Project
+//                                    www.ilgpu.net
+//
+// File: .cs
+//
+// This file is part of ILGPU and is distributed under the University of Illinois Open
+// Source License. See LICENSE.txt for details.
+// ---------------------------------------------------------------------------------------
+using System;
 
 using System.Collections.Concurrent;
 using GPUVulkan;
@@ -10,21 +20,25 @@ namespace VulkanPlatform
     /*
      * descriptors essentially describe what is in a storage or frame buffer, while its not necessarily obvious its likely
      * far more efficient to bundle/pool descriptor with what they represent
-     * 
-    public class ResourcePool
+     */ 
+    public class VulkanResourcePool
     {
+        public int MaxThreads { get; private set; } // should be limited to CPU performance cores less 2
         private VkDevice device;
         private VkDescriptorSetLayout descriptorSetLayout;
-        private ConcurrentDictionary<int, VkDescriptorPool> descriptorPools
-            = new ConcurrentDictionary<int, VkDescriptorPool>();
+        private ConcurrentDictionary<int, VulkanResource> vulkanResource
+            = new ConcurrentDictionary<int, VulkanResource>();
 
-        private VkDescriptorPoolSize[] descriptorPoolSizes;
+        private VkDescriptorPoolSize[] _descriptorPoolSizes;
 
-        public ResourcePool(VkDevice device, VkDescriptorSetLayout descriptorSetLayout)
+        public VulkanResourcePool(VkDevice device, int maxThreads, VkDescriptorPoolSize[] descriptorPoolSizes)
         {
             this.device = device;
-            this.descriptorSetLayout = descriptorSetLayout;
+            this.MaxThreads = maxThreads;
+            _descriptorPoolSizes = descriptorPoolSizes;
         }
+
+
 
         public VkDescriptorPool GetThreadDescriptorPool()
         {
@@ -73,6 +87,6 @@ namespace VulkanPlatform
             vkUpdateDescriptorSets(device, 1, ref writeDescriptorSet, 0, null);
         }
     }
-    */
+    
 }
 
