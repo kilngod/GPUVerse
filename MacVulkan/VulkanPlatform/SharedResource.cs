@@ -11,7 +11,10 @@ namespace VulkanPlatform
         public VkBuffer Buffer { get; set; }
 
         public uint BufferSize { get; set; }
+
         public VkDeviceMemory DeviceMemory { get; set; }
+
+        public VkDescriptorPoolSize[] descriptorPoolSizes { get; set; }
 
     }
 }
