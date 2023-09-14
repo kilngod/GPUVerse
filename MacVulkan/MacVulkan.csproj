@@ -65,6 +65,7 @@
     <Compile Include="VulkanPlatform\IVulkanCompute.cs" />
     <Compile Include="VulkanPlatform\IVulkanRenderer.cs" />
     <Compile Include="VulkanPlatform\IVulkanSupport.cs" />
+    <Compile Include="VulkanPlatform\SharedResource.cs" />
     <Compile Include="VulkanPlatform\VulkanIO.cs" />
     <Compile Include="VulkanPlatform\VulkanDebug.cs" />
     <Compile Include="VulkanPlatform\VulkanDraw.cs" />

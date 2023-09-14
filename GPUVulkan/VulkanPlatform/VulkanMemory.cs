@@ -108,10 +108,10 @@ namespace VulkanPlatform
 
 		}
 
-        public static unsafe void BindDeviceMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory memory, uint Offset )
+        public static unsafe void BindDeviceMemory(this VkDevice device, ref VkBuffer buffer, ref VkDeviceMemory memory, uint Offset )
         {
 
-            VulkanHelpers.CheckErrors(VulkanNative.vkBindBufferMemory(support.Device, buffer, memory, Offset));
+            VulkanHelpers.CheckErrors(VulkanNative.vkBindBufferMemory(device, buffer, memory, Offset));
 
         }
     }

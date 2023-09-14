@@ -26,9 +26,9 @@ namespace WinVulkanApp
 		}
 
 
-        bool _unifiedMemory = false;
+        bool _gpuPerformaceMemory = false;
 
-        public bool UnifiedMemory { get; }
+        public bool GPUPerformanceMemory { get {; } }
 
         int _computeFamilyIndex = -1;
         public int ComputeCommandBuffers { get; set; } = 1;
@@ -242,14 +242,14 @@ namespace WinVulkanApp
             // size pixel map
             buffer_size = (ulong)sizeof(VulkanPixel) * kWidth * kHeight;
             _buffer = default(VkBuffer);
-            Support.CreateBuffer(buffer_size, ref _buffer);
+            Support.Device.CreateBuffer(buffer_size, ref _buffer);
             
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
-            Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _unifiedMemory);
+            Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _gpuMemory);
 
             // bind memory
-            Support.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);
+            Support.Device.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);
         }
 
 
@@ -276,7 +276,7 @@ namespace WinVulkanApp
                 bindingCount = 1, 
                 pBindings = &layoutBinding 
             };
-            this.CreateDescriptorSetLayout(ref layoutCreateInfo, ref _descriptorSetLayout);
+            this.Support.Device.CreateDescriptorSetLayout(ref layoutCreateInfo, ref _descriptorSetLayout);
 
             // descriptor pool
             VkDescriptorPoolSize descriptorPoolSize = new VkDescriptorPoolSize() 
@@ -294,7 +294,7 @@ namespace WinVulkanApp
             };
 
            
-            this.CreateDescriptorPool(ref poolCreateInfo, ref _descriptorPool);
+            this.Support.Device.CreateDescriptorPool(ref poolCreateInfo, ref _descriptorPool);
 
             fixed (VkDescriptorSetLayout* layoutPtr = &_descriptorSetLayout)
             {
@@ -309,7 +309,7 @@ namespace WinVulkanApp
                     pSetLayouts = layoutPtr
                 };
             
-                this.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
+                this.Support.Device.AllocateDescriptorSets(ref allocateInfo, ref _descriptorSets[0]);
             }
 
             // connect buffer to descriptor sets
@@ -330,7 +330,7 @@ namespace WinVulkanApp
             };
 
       
-            this.UpdateDescriptorSet(ref writeDescriptorSet);
+            this.Support.Device.UpdateDescriptorSet(ref writeDescriptorSet);
 
             
         }
