@@ -65,7 +65,8 @@ namespace VulkanPlatform
 
         }
 
-        public unsafe static void UpdateDescriptorSet(this VkDevice device, ref VkWriteDescriptorSet writeSet)        {
+        public unsafe static void UpdateDescriptorSet(this VkDevice device, ref VkWriteDescriptorSet writeSet)
+        {
             fixed (VkWriteDescriptorSet* writeSetPtr = &writeSet)
             {
                 

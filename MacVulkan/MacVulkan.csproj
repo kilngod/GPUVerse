@@ -65,7 +65,7 @@
     <Compile Include="VulkanPlatform\IVulkanCompute.cs" />
     <Compile Include="VulkanPlatform\IVulkanRenderer.cs" />
     <Compile Include="VulkanPlatform\IVulkanSupport.cs" />
-    <Compile Include="VulkanPlatform\SharedResource.cs" />
+    <Compile Include="VulkanPlatform\VulkanResourceElement.cs" />
     <Compile Include="VulkanPlatform\VulkanIO.cs" />
     <Compile Include="VulkanPlatform\VulkanDebug.cs" />
     <Compile Include="VulkanPlatform\VulkanDraw.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="VulkanPlatform\VulkanComputing.cs" />
     <Compile Include="VulkanPlatform\VulkanImage.cs" />
     <Compile Include="VulkanPlatform\VulkanResourcePool.cs" />
-    <Compile Include="VulkanPlatform\VulkanResource.cs" />
+    <Compile Include="VulkanPlatform\VulkanResourceThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="libMoltenVK.dylib">
