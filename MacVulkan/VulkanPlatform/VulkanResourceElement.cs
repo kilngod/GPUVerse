@@ -17,10 +17,7 @@ namespace VulkanPlatform
 
         public VkDeviceMemory DeviceMemory;
 
-        public VkDescriptorPoolSize[] DescriptorPoolSizes;
-
-        
-        public VkDescriptorBufferInfo[][] DescriptorBufferInfos;
+        public VulkanResourceSegment[] Segments;
     }
 
    

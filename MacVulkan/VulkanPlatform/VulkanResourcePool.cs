@@ -46,13 +46,14 @@ namespace VulkanPlatform
             sharedResources.Add(sharedResource);
 
             uint totalDescriptors = 0;
+            
 
-            for (int iPool = 0; iPool < sharedResource.DescriptorPoolSizes.Length; iPool++)
+            for(int iSegment = 0; iSegment < sharedResource.Segments.Length; iSegment++)
             {
-                uint descriptorSegments = (uint)sharedResource.DescriptorBufferInfos[iPool].Length;
-
-                totalDescriptors += sharedResource.DescriptorPoolSizes[iPool].descriptorCount * descriptorSegments;
+                totalDescriptors += sharedResource.Segments[iSegment].DescriptorPoolSize.descriptorCount;
             }
+
+            VkDescriptorPoolSize[] DescriptorPoolSizes = sharedResource.
 
             Parallel.For(0, MaxThreads, i =>
             {
@@ -86,7 +87,7 @@ namespace VulkanPlatform
                         VkDescriptorPoolCreateInfo poolCreateInfo = new VkDescriptorPoolCreateInfo()
                         {
                             sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-                            poolSizeCount = (uint)sharedResource.DescriptorPoolSizes.Length,
+                            poolSizeCount = (uint)sharedResource.Segments.Length,
                             pPoolSizes = poolPtr,
                             maxSets = totalDescriptors
                         };

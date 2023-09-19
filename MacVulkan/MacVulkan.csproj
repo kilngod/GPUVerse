@@ -89,6 +89,7 @@
     <Compile Include="VulkanPlatform\VulkanImage.cs" />
     <Compile Include="VulkanPlatform\VulkanResourcePool.cs" />
     <Compile Include="VulkanPlatform\VulkanResourceThread.cs" />
+    <Compile Include="VulkanPlatform\VulkanResourceSegment.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="libMoltenVK.dylib">
