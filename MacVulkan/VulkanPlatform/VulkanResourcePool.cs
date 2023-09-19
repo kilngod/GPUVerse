@@ -16,6 +16,7 @@ using System.Threading;
 using CoreVideo;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VulkanPlatform
 {
@@ -53,7 +54,7 @@ namespace VulkanPlatform
                 totalDescriptors += sharedResource.Segments[iSegment].DescriptorPoolSize.descriptorCount;
             }
 
-            VkDescriptorPoolSize[] DescriptorPoolSizes = sharedResource.
+            VkDescriptorPoolSize[] DescriptorPoolSizes = sharedResource.Segments.Select(x => x.DescriptorPoolSize).ToArray(); 
 
             Parallel.For(0, MaxThreads, i =>
             {
@@ -81,7 +82,7 @@ namespace VulkanPlatform
 
                     device.CreateDescriptorSetLayout(ref layoutCreateInfo, ref resource.DescriptorSetLayout);
 
-                    fixed (VkDescriptorPoolSize* poolPtr = &sharedResource.DescriptorPoolSizes[0])
+                    fixed (VkDescriptorPoolSize* poolPtr = &DescriptorPoolSizes[0])
                     {
 
                         VkDescriptorPoolCreateInfo poolCreateInfo = new VkDescriptorPoolCreateInfo()
@@ -110,20 +111,29 @@ namespace VulkanPlatform
 
                     device.AllocateDescriptorSets(ref allocateInfo, ref resource.DescriptorSets[0]);
 
+                    uint iStart = 0;
 
-
-
-                    VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
+                    for (int i = 0; i < sharedResource.Segments.Length; i++)
                     {
-                        dstSet = resource.DescriptorSets[0],
-                        descriptorCount = (uint)resource.DescriptorSets.Length,
-                        dstBinding = 0,
-                        descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                        pBufferInfo = &resource.
-                    };
 
+                        fixed (VkDescriptorBufferInfo* bufferInfoPtr = &sharedResource.Segments[i].DescriptorBufferSegmentInfos[0])
+                        {
 
-                    device.UpdateDescriptorSet(ref writeDescriptorSet);
+                            VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
+                            {
+                                dstSet = resource.DescriptorSets[iStart],
+                                descriptorCount = (uint)resource.DescriptorSets.Length,
+                                dstBinding = sharedResource.Segments[i].BindingPoint,
+                                descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                                pBufferInfo = bufferInfoPtr
+                            };
+
+                            iStart += (uint) sharedResource.Segments[i].DescriptorBufferSegmentInfos.Length;
+
+                            device.UpdateDescriptorSet(ref writeDescriptorSet);
+                        }
+
+                    }
 
 
 
