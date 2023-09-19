@@ -23,7 +23,7 @@ namespace VulkanPlatform
     /*
      * descriptors essentially describe what is in a storage or frame buffer, while its not necessarily obvious its likely
      * far more efficient to bundle/pool descriptor with what they represent
-     */ 
+     */
     public class VulkanResourcePool
     {
         public int MaxThreads { get; private set; } // should be limited to CPU performance cores less 2
@@ -32,7 +32,7 @@ namespace VulkanPlatform
         private ConcurrentDictionary<int, VulkanResourceThread> vulkanResource
             = new ConcurrentDictionary<int, VulkanResourceThread>();
 
-       
+
         public VulkanResourcePool(VkDevice device, int maxThreads)
         {
             this.device = device;
@@ -47,9 +47,9 @@ namespace VulkanPlatform
 
             uint totalDescriptors = 0;
 
-            for (int iPool = 0; iPool < sharedResource.DescriptorPoolSizes.Length; iPool ++)
+            for (int iPool = 0; iPool < sharedResource.DescriptorPoolSizes.Length; iPool++)
             {
-                uint descriptorSegments = (uint) sharedResource.DescriptorBufferSegments[iPool].Length;
+                uint descriptorSegments = (uint)sharedResource.DescriptorBufferInfos[iPool].Length;
 
                 totalDescriptors += sharedResource.DescriptorPoolSizes[iPool].descriptorCount * descriptorSegments;
             }
@@ -62,7 +62,7 @@ namespace VulkanPlatform
 
                 if (vulkanResource.TryAdd(i, resource))
                 {
-                   
+
 
                     VkDescriptorSetLayoutBinding layoutBinding = new VkDescriptorSetLayoutBinding()
                     {
@@ -77,7 +77,7 @@ namespace VulkanPlatform
                         bindingCount = 1,
                         pBindings = &layoutBinding
                     };
-                    
+
                     device.CreateDescriptorSetLayout(ref layoutCreateInfo, ref resource.DescriptorSetLayout);
 
                     fixed (VkDescriptorPoolSize* poolPtr = &sharedResource.DescriptorPoolSizes[0])
@@ -86,7 +86,7 @@ namespace VulkanPlatform
                         VkDescriptorPoolCreateInfo poolCreateInfo = new VkDescriptorPoolCreateInfo()
                         {
                             sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-                            poolSizeCount = (uint) sharedResource.DescriptorPoolSizes.Length,
+                            poolSizeCount = (uint)sharedResource.DescriptorPoolSizes.Length,
                             pPoolSizes = poolPtr,
                             maxSets = totalDescriptors
                         };
@@ -98,7 +98,7 @@ namespace VulkanPlatform
 
                     resource.DescriptorSets = new VkDescriptorSet[totalDescriptors];
 
-                        // descriptor sets
+                    // descriptor sets
                     VkDescriptorSetAllocateInfo allocateInfo = new VkDescriptorSetAllocateInfo()
                     {
                         sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
@@ -108,9 +108,9 @@ namespace VulkanPlatform
                     };
 
                     device.AllocateDescriptorSets(ref allocateInfo, ref resource.DescriptorSets[0]);
-                    
-                    
-                
+
+
+
 
                     VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
                     {
@@ -132,51 +132,12 @@ namespace VulkanPlatform
             });
         }
 
-          
-        }
 
-      
-        
-
-        public VkDescriptorSet AllocateVulkanResources()
-        {
-            VkDescriptorPool descriptorPool = GetThreadDescriptorPool();
-
-            VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo
-            {
-                sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-                descriptorPool = descriptorPool,
-                descriptorSetCount = 1,
-                pSetLayouts = new VkDescriptorSetLayout[] { descriptorSetLayout }
-            };
-
-            vkAllocateDescriptorSets(device, ref descriptorSetAllocateInfo, out VkDescriptorSet descriptorSet);
-            return descriptorSet;
-        }
-
-        public void UpdateDescriptorSet(VkDescriptorSet descriptorSet, VkBuffer buffer, ulong offset, ulong range)
-        {
-            VkDescriptorBufferInfo bufferInfo = new VkDescriptorBufferInfo
-            {
-                buffer = buffer,
-                offset = offset,
-                range = range
-            };
-
-            VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet
-            {
-                sType = VkStructureType.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                dstSet = descriptorSet,
-                dstBinding = 0,
-                dstArrayElement = 0,
-                descriptorCount = 1,
-                descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                pBufferInfo = new VkDescriptorBufferInfo[] { bufferInfo }
-            };
-
-            vkUpdateDescriptorSets(device, 1, ref writeDescriptorSet, 0, null);
-        }
     }
-    
+
+
+
 }
+    
+
 

@@ -19,8 +19,8 @@ namespace VulkanPlatform
 
         public VkDescriptorPoolSize[] DescriptorPoolSizes;
 
-        // one set of descriptor buffer infor per pool size.
-        public VkDescriptorBufferInfo[][] DescriptorBufferSegments;
+        
+        public VkDescriptorBufferInfo[][] DescriptorBufferInfos;
     }
 
    
