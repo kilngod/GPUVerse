@@ -113,22 +113,22 @@ namespace VulkanPlatform
 
                     uint iStart = 0;
 
-                    for (int i = 0; i < sharedResource.Segments.Length; i++)
+                    for (int iSegment = 0; iSegment < sharedResource.Segments.Length; iSegment++)
                     {
 
-                        fixed (VkDescriptorBufferInfo* bufferInfoPtr = &sharedResource.Segments[i].DescriptorBufferSegmentInfos[0])
+                        fixed (VkDescriptorBufferInfo* bufferInfoPtr = &sharedResource.Segments[iSegment].DescriptorBufferSegmentInfos[0])
                         {
-
+                            // note this looks very different if this is a uniform buffer or
                             VkWriteDescriptorSet writeDescriptorSet = new VkWriteDescriptorSet()
                             {
                                 dstSet = resource.DescriptorSets[iStart],
                                 descriptorCount = (uint)resource.DescriptorSets.Length,
-                                dstBinding = sharedResource.Segments[i].BindingPoint,
+                                dstBinding = sharedResource.Segments[iSegment].BindingPoint,
                                 descriptorType = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                                 pBufferInfo = bufferInfoPtr
                             };
 
-                            iStart += (uint) sharedResource.Segments[i].DescriptorBufferSegmentInfos.Length;
+                            iStart += (uint) sharedResource.Segments[iSegment].DescriptorBufferSegmentInfos.Length;
 
                             device.UpdateDescriptorSet(ref writeDescriptorSet);
                         }

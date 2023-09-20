@@ -184,7 +184,7 @@ namespace MacVulkanApp
             // size pixel map
             buffer_size = (ulong)sizeof(Pixel) * kWidth * kHeight;
             _buffer = default(VkBuffer);
-            Support.CreateBuffer(buffer_size, ref _buffer);
+            Support.Device.CreateBuffer(buffer_size, ref _buffer);
             
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
@@ -192,7 +192,7 @@ namespace MacVulkanApp
             Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _unifiedMemory);
 
             // bind memory
-            Support.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);
+            Support.Device.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);
         }
 
 

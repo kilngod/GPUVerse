@@ -12,11 +12,9 @@ namespace VulkanPlatform
 		public VkDescriptorSetLayout DescriptorSetLayout; 
 		public VkDescriptorPool DescriptorPool;
 
-        public bool InUse { get; set; } = false;
-		public bool Allocated { get; set; } = false;
-        public VulkanResourceThread()
-		{
-		}
+		public bool InUse;
+		public bool Allocated;
+        
 	}
 }
 
