@@ -30,8 +30,8 @@ namespace VulkanPlatform
         public int MaxThreads { get; private set; } // should be limited to CPU performance cores less 2
         private VkDevice device;
         private ConcurrentBag<VulkanResourceElement> sharedResources;
-        private ConcurrentDictionary<int, VulkanResourcePerThread> vulkanResource
-            = new ConcurrentDictionary<int, VulkanResourcePerThread>();
+        private ConcurrentDictionary<int, VulkanResourceThread> vulkanResource
+            = new ConcurrentDictionary<int, VulkanResourceThread>();
 
 
         public VulkanResourcePool(VkDevice device, int maxThreads)
@@ -59,7 +59,7 @@ namespace VulkanPlatform
             Parallel.For(0, MaxThreads, i =>
             {
 
-                VulkanResourcePerThread resource = new VulkanResourcePerThread();
+                VulkanResourceThread resource = new VulkanResourceThread();
 
 
                 if (vulkanResource.TryAdd(i, resource))
