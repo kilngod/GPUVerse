@@ -66,15 +66,15 @@ namespace VulkanPlatform
             VulkanNative.vkUnmapMemory(device, memory);
         }
 
-        public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags requestedMemoryFlags, ref bool localGPUMemory, ref bool localCPUMemory)
+        public static uint FindMemoryType(uint memory_type_bits, VkPhysicalDeviceMemoryProperties memoryProperties, VkMemoryPropertyFlags requestedMemoryFlags)
         {
 
             VkMemoryPropertyFlags memoryPropertyFlags = memoryProperties.GetMemoryType(0).propertyFlags;
 
             if ((memoryPropertyFlags & requestedMemoryFlags) == requestedMemoryFlags)
             {
-                localGPUMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0;
-                localCPUMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT) > 0;
+            //    localGPUMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0;
+            //    localCPUMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT) > 0;
                 return 0;
             }
             for (int i = 1; i < 32; i++)
@@ -82,8 +82,8 @@ namespace VulkanPlatform
                 memoryPropertyFlags = memoryProperties.GetMemoryType(1).propertyFlags;
                 if (((memory_type_bits << (i - 1) & 1) == 1) & (memoryPropertyFlags & requestedMemoryFlags) == requestedMemoryFlags)
                 {
-                    localGPUMemory = (memoryPropertyFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0;
-                    localCPUMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT) > 0;
+              //      localGPUMemory = (memoryPropertyFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0;
+              //      localCPUMemory = (requestedMemoryFlags & VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT) > 0;
                     return (uint)i;
                 }
             }
@@ -91,7 +91,7 @@ namespace VulkanPlatform
 
         }
 
-        public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory, ref bool unifiedMemory)
+        public static unsafe void AllocateMemory(this IVulkanSupport support, ref VkBuffer buffer, ref VkDeviceMemory deviceMemory)
         {
             VkMemoryRequirements memoryRequirements = default(VkMemoryRequirements);
             VkPhysicalDeviceMemoryProperties memoryProperties = default(VkPhysicalDeviceMemoryProperties);
@@ -103,7 +103,7 @@ namespace VulkanPlatform
             VkMemoryAllocateInfo allocateInfo = new VkMemoryAllocateInfo()
             {
                 sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-                memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, ref unifiedMemory),
+                memoryTypeIndex = FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT),
                 allocationSize = memoryRequirements.size
             };
 

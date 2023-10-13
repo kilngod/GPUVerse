@@ -24,12 +24,7 @@ namespace WinVulkanApp
 		{
             _support = support;
 		}
-
-
-        bool _gpuPerformaceMemory = false;
-
-        public bool GPUPerformanceMemory { get {; } }
-
+              
         int _computeFamilyIndex = -1;
         public int ComputeCommandBuffers { get; set; } = 1;
         public int ComputeFamilyIndex { get { return _computeFamilyIndex; } }
@@ -246,7 +241,7 @@ namespace WinVulkanApp
             
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
-            Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _gpuMemory);
+            Support.AllocateMemory(ref _buffer, ref _deviceMemory);
 
             // bind memory
             Support.Device.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);

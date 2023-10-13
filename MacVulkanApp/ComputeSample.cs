@@ -189,7 +189,7 @@ namespace MacVulkanApp
             //allocate memory
             _deviceMemory = default(VkDeviceMemory);
 
-            Support.AllocateMemory(ref _buffer, ref _deviceMemory, ref _unifiedMemory);
+            Support.AllocateMemory(ref _buffer, ref _deviceMemory);
 
             // bind memory
             Support.Device.BindDeviceMemory(ref _buffer, ref _deviceMemory, 0);

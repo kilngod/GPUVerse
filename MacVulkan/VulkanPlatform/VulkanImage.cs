@@ -123,7 +123,7 @@ namespace VulkanPlatform
             VkMemoryAllocateInfo allocInfo = new VkMemoryAllocateInfo()
             {
                 allocationSize = memoryRequirements.size,
-                memoryTypeIndex = VulkanMemory.FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, requestedMemoryProperties, ref localMemory)
+                memoryTypeIndex = VulkanMemory.FindMemoryType(memoryRequirements.memoryTypeBits, memoryProperties, requestedMemoryProperties)
             };
 
             fixed (VkDeviceMemory* memoryPtr = &memory)
