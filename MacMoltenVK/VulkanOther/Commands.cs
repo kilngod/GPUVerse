@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace GPUVulkan
 {
+    /*
     public static unsafe partial class VulkanNative
     {
         private const CallingConvention CallConv = CallingConvention.StdCall;
@@ -52,14 +53,7 @@ namespace GPUVulkan
                 // note for iOS we will have to rewrite the vulkan code generator to use static linking or setup the library as a framework package
                 // the iphone store does not allow dynamically linked libraries.
                 throw new Exception("iOS does not directly support dynamic loading of DLLs, must be made static or added to a framework package.");
-                /*
-                string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                string dropPoint = "GPUMauiApp.app";
-               // appDirectory = appDirectory.Substring(0, appDirectory.IndexOf(dropPoint) - dropPoint.Length);
-                string dylibPath = System.IO.Path.Combine(appDirectory, "libMoltenVK.dylib");
-                //return dylibPath;
-                return "libMoltenVK.dylib";
-                */
+             
             }
             else if (RuntimeInformation.RuntimeIdentifier.ToLower().IndexOf("tvos") >= 0)
             {
@@ -78,5 +72,5 @@ namespace GPUVulkan
             }
             throw new Exception("Application Type Unknown");
         }
-    }
+    }*/
 }

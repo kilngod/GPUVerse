@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
@@ -98,6 +98,7 @@
 	  </BundleResource>
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Platforms\Android\" />
 	  <Folder Include="Platforms\Tizen\" />
 	</ItemGroup>
 </Project>
