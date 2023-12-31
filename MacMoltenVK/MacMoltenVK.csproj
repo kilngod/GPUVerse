@@ -5,7 +5,15 @@
         <ImplicitUsings>true</ImplicitUsings>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <CodesignKey>iPhone Developer</CodesignKey>
+    </PropertyGroup>
     <ItemGroup>
       <Folder Include="VulkanGenerated\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Update="Framework\libMoltenVK.dylib">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 </Project>
